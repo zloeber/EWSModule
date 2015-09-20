@@ -1,4 +1,6 @@
-﻿$webclient = New-Object System.Net.WebClient
+﻿# Install EWSModule with the following:
+# iex (New-Object Net.WebClient).DownloadString("https://github.com/zloeber/EWSModule/raw/master/Install-EWSModule.ps1")
+$webclient = New-Object System.Net.WebClient
 $url = "https://github.com/zloeber/EWSModule/archive/master.zip"
 Write-Host "Downloading latest version of EWSModule from $url" -ForegroundColor Cyan
 $file = "$($env:TEMP)\EWSModule.zip"
