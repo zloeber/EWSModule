@@ -1,4 +1,4 @@
-function Initialize-EWS {
+﻿function Initialize-EWS {
     <#
     .SYNOPSIS
     Load EWS dlls and create type accelerators for other functions.
@@ -64,9 +64,9 @@ function Initialize-EWS {
     else {
         # Uninitialize EWS
         if (Get-EWSModuleInitializationState) {
-            $accelerators = [PSObject].Assembly.GetType('System.Management.Automation.TypeAccelerators')
+            $accelerators = [PSObject].Assembly.GetType('System.Management.Automation.TypeAccelerators')::get
             $accelkeyscopy = @{}
-            $accelkeys.Keys | Where {$_ -like 'ews_*'} | Foreach { $accelkeyscopy.$_ = $accelkeys[$_] }
+            $accelerators.Keys | Where {$_ -like "ews_*"} | Foreach { $accelkeyscopy.$_ = $accelkeys[$_] }
             foreach ( $key in $accelkeyscopy.Keys ) {
                 Write-Verbose "UnInitialize-EWS: Removing type accelerator - $($key)"
                 $accelerators::Remove("$($key)") | Out-Null
