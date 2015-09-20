@@ -14,6 +14,7 @@ Write-Host "Uncompressing the Zip file to $($targetondisk)" -ForegroundColor Cya
 $destination = $shell_app.namespace($targetondisk)
 $destination.Copyhere($zip_file.items(), 0x10)
 Write-Host "Renaming folder" -ForegroundColor Cyan
+if (Test-Path "$targetondisk\EWSModule") { Remove-Item -Force "$targetondisk\EWSModule" }
 Rename-Item -Path ($targetondisk+"\EWSModule-master") -NewName "EWSModule" -Force
 Write-Host "Module has been installed" -ForegroundColor Green
 Import-Module -Name EWSModule
