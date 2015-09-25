@@ -1,8 +1,37 @@
-function Get-EWSFolder {
+﻿function Get-EWSFolder {
+    <#
+    .SYNOPSIS
+        Return a mailbox folder object.
+    .DESCRIPTION
+        Return a mailbox folder object.
+    .PARAMETER EWSService
+        Exchange web service connection object to use. The default is using the currently connected session.
+    .PARAMETER Mailbox
+        Mailbox to target. If none is provided, impersonation is checked and used if possible, otherwise the EWSService object mailbox is targeted.
+    .PARAMETER FolderPath
+        Path of folder in the form of /folder1/folder2
+    .PARAMETER PublicFolder
+        Force target a public folder instead.
+
+    .EXAMPLE
+        PS > 
+        PS > 
+
+        Description
+        -----------
+        TBD
+
+    .NOTES
+       Author: Zachary Loeber
+       Site: http://www.the-little-things.net/
+       Requires: Powershell 3.0
+       Version History
+       1.0.0 - Initial release
+    #>
     [CmdletBinding()]
     param(
-        [parameter(Position=0, HelpMessage='Connected EWS object.')]
-        $EWSService,
+        [parameter(HelpMessage='Connected EWS object.')]
+        [ews_service]$EWSService,
         [parameter(Position=1, HelpMessage='Mailbox of folder.')]
         [string]$Mailbox,
         [parameter(Position=2, HelpMessage='Folder path.')]
@@ -10,6 +39,8 @@ function Get-EWSFolder {
         [parameter(Position=2, HelpMessage='Public Folder Path?')]
         [switch]$PublicFolder
     )
+    # Pull in all the caller verbose,debug,info,warn and other preferences
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     $FunctionName = $MyInvocation.MyCommand
     
     if (-not (Get-EWSModuleInitializationState)) {
@@ -19,7 +50,6 @@ function Get-EWSFolder {
     if ($EWSService -eq $null) {
         Write-Verbose "$($FunctionName): Using module local ews service object"
         $EWSService = Get-EWSService
-        Write-Verbose "$($FunctionName): URL targeted = $($EWSService.URL)"
     }
     
     if ($EWSService -eq $null) {

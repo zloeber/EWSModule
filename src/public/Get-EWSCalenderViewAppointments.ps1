@@ -1,22 +1,66 @@
-function Get-EWSCalenderViewAppointments {
-    # uses a slower method for accessing appointments
+﻿function Get-EWSCalenderViewAppointments {
+    <#
+    .SYNOPSIS
+        Uses a slower method for accessing and returning calendar appointments
+    .DESCRIPTION
+        Uses a slower method for accessing and returning calendar appointments
+    .PARAMETER EWSService
+        Exchange web service connection object to use. The default is using the currently connected session.
+    .PARAMETER Mailbox
+        Mailbox to target. If none is provided, impersonation is checked and used if possible, otherwise the EWSService object mailbox is targeted.
+    .PARAMETER StartRange
+        Start of when to look for appointments.
+    .PARAMETER EndRange
+        End of when to look for appointments.
+
+    .EXAMPLE
+        PS > 
+        PS > 
+
+        Description
+        -----------
+        TBD
+
+    .NOTES
+       Author: Zachary Loeber
+       Site: http://www.the-little-things.net/
+       Requires: Powershell 3.0
+       Version History
+       1.0.0 - Initial release
+    #>
     [CmdletBinding()]
     param(
-        [parameter(Position=0, HelpMessage='Connected EWS object.')]
-        [ews_service]$EWSService = (Get-EWSService),
+        [parameter(HelpMessage='Connected EWS object.')]
+        [ews_service]$EWSService,
         [string]$Mailbox = '',
         [datetime]$StartRange = (Get-Date),
         [datetime]$EndRange = ((Get-Date).AddMonths(12))
     )
+    # Pull in all the caller verbose,debug,info,warn and other preferences
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     $FunctionName = $MyInvocation.MyCommand
     
     if (-not (Get-EWSModuleInitializationState)) {
-        throw 'EWS Module has not been initialized. Try running Initialize-EWS to rectify.'
+        throw "$($FunctionName): EWS Module has not been initialized. Try running Initialize-EWS to rectify."
     }
     
-    $email = Get-EWSTargettedMailbox -EWSService $EWSService -Mailbox $Mailbox
+    if ($EWSService -eq $null) {
+        Write-Verbose "$($FunctionName): Using module local ews service object"
+        $EWSService = Get-EWSService
+    }
     
-    Write-Verbose "Get-EWSCalendarEnties: Attempting to gather calendar entries for $($email)"
+    if ($EWSService -eq $null) {
+        throw "$($FunctionName): EWS connection has not been established. Create a new connection with Connect-EWS first."
+    }
+    
+    try {
+        $email = Get-EWSTargettedMailbox -EWSService $EWSService -Mailbox $Mailbox
+    }
+    catch {
+        throw "$($FunctionName): Unable to get targeted mailbox"
+    }
+    
+    Write-Verbose "$($FunctionName): Attempting to gather calendar entries for $($email)"
     $MailboxToAccess = new-object ews_mailbox($email)
 
     $FolderID = new-object ews_folderid([ews_wellknownfolder]::Calendar, $MailboxToAccess)

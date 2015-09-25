@@ -1,13 +1,59 @@
-function Get-EWSCalendarAppointments {
-    # Use FindItems as opposed to FindAppointments
+﻿function Get-EWSCalendarAppointments {
+    # 
+    <#
+    .SYNOPSIS
+        Uses the much faster FindItems as opposed to FindAppointments to return calendar appointments.
+    .DESCRIPTION
+        Uses the much faster FindItems as opposed to FindAppointments to return calendar appointments.
+    .PARAMETER EWSService
+        Exchange web service connection object to use. The default is using the currently connected session.
+    .PARAMETER Mailbox
+        Mailbox to target. If none is provided, impersonation is checked and used if possible, otherwise the EWSService object mailbox is targeted.
+    .PARAMETER FolderPath
+        Path of folder in the form of /folder1/folder2
+    .PARAMETER StartsAfter
+        Start date for the appointment(s) must be after this date
+    .PARAMETER StartsBefore
+        Start date for the appointment(s) must be before this date
+    .PARAMETER EndsAfter
+        nd date for the appointment(s) must be after this date
+    .PARAMETER EndsBefore
+        nd date for the appointment(s) must be before this date
+    .PARAMETER CreatedAfter
+        Only appointments created after the given date will be returned
+    .PARAMETER CreatedBefore
+        Only appointments created before the given date will be returned
+    .PARAMETER LastOccurrenceAfter
+        Only recurring appointments with a last occurrence date after the given date will be returned
+    .PARAMETER LastOccurrenceBefore
+        Only recurring appointments with a last occurrence date before the given date will be returned
+    .PARAMETER IsRecurring
+        If this switch is present, only recurring appointments are returned
+    .PARAMETER ExtendedProperties
+        Filter results by custom extended properties.
+    .EXAMPLE
+        PS > 
+        PS > 
+
+        Description
+        -----------
+        TBD
+
+    .NOTES
+       Author: Zachary Loeber
+       Site: http://www.the-little-things.net/
+       Requires: Powershell 3.0
+       Version History
+       1.0.0 - Initial release
+    #>
     [CmdletBinding()]
     param(
         [parameter(Position=0, HelpMessage='Connected EWS object.')]
-        [ews_service]$EWSService = (Get-EWSService),
+        [ews_service]$EWSService,
         [Parameter(HelpMessage="Mailbox to search - if omitted the EWS connection account ID is used (or impersonated account if set).")] 
         [string]$Mailbox = '',
         [Parameter(HelpMessage="Folder to search - if omitted, the mailbox calendar folder is assumed")] 
-        $FolderPath,
+        [string]$FolderPath,
         [Parameter(HelpMessage="Subject of the appointment(s) being searched")] 
         [string]$Subject,
         [Parameter(HelpMessage="Start date for the appointment(s) must be after this date")] 
@@ -28,13 +74,24 @@ function Get-EWSCalendarAppointments {
         [datetime]$LastOccurrenceAfter, 
         [Parameter(HelpMessage="If this switch is present, only recurring appointments are returned")]
         [switch]$IsRecurring,
-        [Parameter(HelpMessage='Search for extended properties being set.')]
+        [Parameter(HelpMessage='Search for extended properties.')]
         [ews_extendedpropdef[]]$ExtendedProperties
     )
+    # Pull in all the caller verbose,debug,info,warn and other preferences
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     $FunctionName = $MyInvocation.MyCommand
     
     if (-not (Get-EWSModuleInitializationState)) {
-        throw 'EWS Module has not been initialized. Try running Initialize-EWS to rectify.'
+        throw "$($FunctionName): EWS Module has not been initialized. Try running Initialize-EWS to rectify."
+    }
+    
+    if ($EWSService -eq $null) {
+        Write-Verbose "$($FunctionName): Using module local ews service object"
+        $EWSService = Get-EWSService
+    }
+    
+    if ($EWSService -eq $null) {
+        throw "$($FunctionName): EWS connection has not been established. Create a new connection with Connect-EWS first."
     }
 
     $email = Get-EWSTargettedMailbox -EWSService $EWSService -Mailbox $Mailbox

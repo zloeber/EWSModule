@@ -1,4 +1,42 @@
-function Connect-EWS {
+﻿function Connect-EWS {
+    <#
+    .SYNOPSIS
+        Connects to Exchange Web Services.
+    .DESCRIPTION
+        Connects to Exchange Web Services. Allows for multiple methods to connect, including autodiscover.
+        Note that your login ID must be in email format for autodiscover to function.
+    .PARAMETER UserName
+        Username to connect with.
+    .PARAMETER Password
+        Password to connect with.
+    .PARAMETER Domain
+        Domain to connect to.
+    .PARAMETER Credential
+        Credential object to connect with.
+    .PARAMETER ExchangeVersion
+        Version of Exchange to target.
+    .PARAMETER EWSUrl
+        Exchange web services url to connect to.
+    .PARAMETER EWSTracing
+        Enable EWS tracing.
+    .PARAMETER IgnoreSSLCertificate
+        Ignore SSL validation checks.
+
+    .EXAMPLE
+       PS > $credentials = Get-Credential
+       PS > Connect-EWS -Creds $credentials -ExchangeVersion 'Exchange2013_SP1' -EwsUrl 'https://webmail.contoso.com/ews/Exchange.asmx'
+       
+       Description
+       -----------
+       Connects to Exchange web services with credentials provided at the prompt.
+
+    .NOTES
+       Author: Zachary Loeber
+       Site: http://www.the-little-things.net/
+       Requires: Powershell 3.0
+       Version History
+       1.0.0 - Initial release
+    #>
     [CmdLetBinding(DefaultParameterSetName='Default')]
     param(
         [parameter(Mandatory=$True,ParameterSetName='CredentialString', HelpMessage='Alternate credential username.')]
@@ -108,12 +146,15 @@ function Connect-EWS {
     }
     
     Set-EWSService $tempEWSService
+    
+    # If ServerCertificateValidationCallback is set to anything you will experience all kinds of issues so we temporarily nullify it for the session.
+    # I'm open to alternatives that work on this one....
     $tempCallback = [System.Net.ServicePointManager]::ServerCertificateValidationCallback
     if ($tempCallback -ne $null) {
-        Write-Verbose "$($FunctionName): ServerCertificateValidationCallback being set to null for this session."
+        Write-Warning "$($FunctionName): ServerCertificateValidationCallback being set to null for this session."
         Set-ServerCertificateValidationCallback [System.Net.ServicePointManager]::ServerCertificateValidationCallback
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = $null
     }
-    
+
     return $true
 }
