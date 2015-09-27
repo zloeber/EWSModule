@@ -1,7 +1,7 @@
 # EWSModule - A stupid easy Powershell EWS module
 
 ##Description
-.... or at least my attempt at one anyway. More documentation to come but if you want to get started download the module anywhere and run some code like the following:
+.... or at least my attempt at one anyway. More documentation to come but if you want to get started download the module  anywhere and run some code like the following:
 
 ```
 Import-Module ./EWSModule.psm1
@@ -11,7 +11,7 @@ Connect-EWS -Credential (Get-Credential) -Verbose
 Get-EWSFolder
 ```
 
- ##Install
+##Install
 
 You can install this module manually with the following command.
 
