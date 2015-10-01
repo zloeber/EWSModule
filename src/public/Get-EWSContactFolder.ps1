@@ -1,8 +1,11 @@
 ﻿function Get-EWSContactFolder {
     param (
-        [Parameter(Position=0, Mandatory=$true)] [string]$FolderPath,
-        [Parameter(Position=1, Mandatory=$true)] [string]$SmptAddress,
-        [Parameter(Position=2, Mandatory=$true)] [Microsoft.Exchange.WebServices.Data.ExchangeService]$service
+        [Parameter(Position=0, Mandatory=$true)]
+        [string]$FolderPath,
+        [Parameter(Position=1, Mandatory=$true)]
+        [string]$SmptAddress,
+        [Parameter(Position=2, Mandatory=$true)]
+        [Microsoft.Exchange.WebServices.Data.ExchangeService]$service
     )
     ## Find and Bind to Folder based on Path  
     #Define the path to search should be seperated with \  

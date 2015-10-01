@@ -1,18 +1,34 @@
 ﻿function Get-EWSUserDN {
-    param (
-            [Parameter(Position=0, Mandatory=$true)] [string]$EmailAddress,
-            [Parameter(Position=1, Mandatory=$true)] [System.Management.Automation.PSCredential]$Credentials
-          )
-    process{
-        $ExchangeVersion= [Microsoft.Exchange.WebServices.Data.ExchangeVersion]::Exchange2013
-        $adService = New-Object Microsoft.Exchange.WebServices.AutoDiscover.AutodiscoverService($ExchangeVersion);
-        $creds = New-Object System.Net.NetworkCredential($Credentials.UserName.ToString(),$Credentials.GetNetworkCredential().password.ToString()) 
-        $adService.Credentials = $creds
-        $adService.EnableScpLookup = $false;
-        $adService.RedirectionUrlValidationCallback = {$true}
-        $UserSettings = new-object Microsoft.Exchange.WebServices.Autodiscover.UserSettingName[] 1
-        $UserSettings[0] = [Microsoft.Exchange.WebServices.Autodiscover.UserSettingName]::UserDN
-        $adResponse = $adService.GetUserSettings($EmailAddress , $UserSettings);
-        return $adResponse.Settings[[Microsoft.Exchange.WebServices.Autodiscover.UserSettingName]::UserDN]
+    [CmdletBinding()] 
+    param(
+        [parameter(HelpMessage='Connected EWS object.')]
+        [ews_service]$EWSService,
+        [Parameter(Position=1, Mandatory=$true)]
+        [string]$EmailAddress
+    )
+    # Pull in all the caller verbose,debug,info,warn and other preferences
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
+    $FunctionName = $MyInvocation.MyCommand
+    
+    if (-not (Get-EWSModuleInitializationState)) {
+        throw "$($FunctionName): EWS Module has not been initialized. Try running Initialize-EWS to rectify."
     }
+    
+    if ($EWSService -eq $null) {
+        Write-Verbose "$($FunctionName): Using module local ews service object"
+        $EWSService = Get-EWSService
+    }
+    
+    if ($EWSService -eq $null) {
+        throw "$($FunctionName): EWS connection has not been established. Create a new connection with Connect-EWS first."
+    }
+    $ExchangeVersion = [ews_exchver]::$($EWSService.RequestedServerVersion)
+    $adService = New-Object ews_autod($ExchangeVersion)
+    $adService.Credentials = $EWSService.Credentials
+    $adService.EnableScpLookup = $false;
+    $adService.RedirectionUrlValidationCallback = {$true}
+    $UserSettings = new-object ews_usersettingname[] 1
+    $UserSettings[0] = [ews_usersettingname]::UserDN
+    $adResponse = $adService.GetUserSettings($EmailAddress, $UserSettings);
+    return $adResponse.Settings[[ews_usersettingname]::UserDN]
 }

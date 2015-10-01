@@ -17,97 +17,80 @@
         Example 4 Or to search via the SIP address you can use
         Get-EWSContact -MailboxName  mailbox@domain.com -EmailAddress sip:info@domain.com -Partial
     #>
-   [CmdletBinding()] 
-    param( 
-        [Parameter(Position=0, Mandatory=$true)] [string]$MailboxName,
-        [Parameter(Position=1, Mandatory=$true)] [string]$EmailAddress,
-        [Parameter(Position=2, Mandatory=$true)] [System.Management.Automation.PSCredential]$Credentials,
-        [Parameter(Position=3, Mandatory=$false)] [string]$Folder,
-        [Parameter(Position=4, Mandatory=$false)] [switch]$SearchGal,
-        [Parameter(Position=5, Mandatory=$false)] [switch]$Partial,
-        [Parameter(Position=6, Mandatory=$false)] [switch]$useImpersonation
+    [CmdletBinding()] 
+    param(
+        [parameter(HelpMessage='Connected EWS object.')]
+        [ews_service]$EWSService,
+        [parameter(Position=1, HelpMessage='Mailbox to target.')]
+        [string]$Mailbox,
+        [Parameter(Position=2, Mandatory=$true)]
+        [string]$EmailAddress,
+        [Parameter(Position=3)]
+        [string]$Folder,
+        [Parameter(Position=4)]
+        [ValidateSet('DirectoryOnly','DirectoryThenContacts','ContactsOnly','ContactsThenDirectory')]
+        [ews_resolvenamelocation]$SearchType = 'ContactsThenDirectory',
+        [Parameter(Position=5)]
+        [switch]$Partial
     )  
-    $service = Connect-Exchange -MailboxName $MailboxName -Credential $Credentials
-    if($useImpersonation.IsPresent){
-        $service.ImpersonatedUserId = new-object Microsoft.Exchange.WebServices.Data.ImpersonatedUserId([Microsoft.Exchange.WebServices.Data.ConnectingIdType]::SmtpAddress, $MailboxName)
+    # Pull in all the caller verbose,debug,info,warn and other preferences
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
+    $FunctionName = $MyInvocation.MyCommand
+    
+    if (-not (Get-EWSModuleInitializationState)) {
+        throw "$($FunctionName): EWS Module has not been initialized. Try running Initialize-EWS to rectify."
     }
-    $folderid= new-object Microsoft.Exchange.WebServices.Data.FolderId([Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::Contacts,$MailboxName)   
-    if($SearchGal)
-    {
-        $Error.Clear();
-        $ncCol = $service.ResolveName($EmailAddress,$ParentFolderIds,[Microsoft.Exchange.WebServices.Data.ResolveNameSearchLocation]::DirectoryOnly,$true);
-        if($Error.Count -eq 0){
-            foreach($Result in $ncCol){    
-                if(($Result.Mailbox.Address.ToLower() -eq $EmailAddress.ToLower()) -bor $Partial.IsPresent){
-                    Write-Output $ncCol.Contact
-                }
-                else{
-                    Write-host -ForegroundColor Yellow ("Partial Match found but not returned because Primary Email Address doesn't match consider using -Partial " + $ncCol.Contact.DisplayName + " : Subject-" + $ncCol.Contact.Subject + " : Email-" + $Result.Mailbox.Address)
-                }
-            }
-        }
+    
+    if ($EWSService -eq $null) {
+        Write-Verbose "$($FunctionName): Using module local ews service object"
+        $EWSService = Get-EWSService
     }
-    else
-    {
-        if($Folder){
-            $Contacts = Get-EWSContactFolder -service $service -FolderPath $Folder -SmptAddress $MailboxName
-        }
-        else{
-            $Contacts = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($service,$folderid)
-        }
-        if($service.URL){
-            $type = ("System.Collections.Generic.List"+'`'+"1") -as "Type"
-            $type = $type.MakeGenericType("Microsoft.Exchange.WebServices.Data.FolderId" -as "Type")
-            $ParentFolderIds = [Activator]::CreateInstance($type)
-            $ParentFolderIds.Add($Contacts.Id)
-            $Error.Clear();
-            $ncCol = $service.ResolveName($EmailAddress,$ParentFolderIds,[Microsoft.Exchange.WebServices.Data.ResolveNameSearchLocation]::DirectoryThenContacts,$true);
-            if($Error.Count -eq 0){
-                if ($ncCol.Count -eq 0) {
-                    Write-Host -ForegroundColor Yellow ("No Contact Found")        
-                }
-                else{
-                    $ResultWritten = $false
-                    foreach($Result in $ncCol){
-                        if($Result.Contact -eq $null){
-                            if(($Result.Mailbox.Address.ToLower() -eq $EmailAddress.ToLower()) -bor $Partial.IsPresent){
-                                $Contact = [Microsoft.Exchange.WebServices.Data.Contact]::Bind($service,$Result.Mailbox.Id)
-                                Write-Output $Contact  
-                                $ResultWritten = $true
-                            }
-                        }
-                        else{
-                        
-                            if(($Result.Mailbox.Address.ToLower() -eq $EmailAddress.ToLower()) -bor $Partial.IsPresent){
-                                if($Result.Mailbox.MailboxType -eq [Microsoft.Exchange.WebServices.Data.MailboxType]::Mailbox){
-                                    $ResultWritten = $true
-                                    $UserDn = Get-EWSUserDN -EmailAddress $Result.Mailbox.Address -Credentials $Credentials 
-                                    $ncCola = $service.ResolveName($UserDn,$ParentFolderIds,[Microsoft.Exchange.WebServices.Data.ResolveNameSearchLocation]::ContactsOnly,$true);
-                                    if ($ncCola.Count -eq 0) {  
-                                        #Write-Host -ForegroundColor Yellow ("No Contact Found")            
-                                    }
-                                    else
-                                    {
-                                        $ResultWritten = $true
-                                        Write-Host ("Number of matching Contacts Found " + $ncCola.Count)
-                                        foreach($aResult in $ncCola){
-                                            $Contact = [Microsoft.Exchange.WebServices.Data.Contact]::Bind($service,$aResult.Mailbox.Id)
-                                            Write-Output $Contact
-                                        }
-                                        
-                                    }
-                                }
-                            }
-                        }
-                        
-                    }
-                    if(!$ResultWritten){
-                        Write-Host -ForegroundColor Yellow ("No Contract Found")
-                    }
-                }
-            }
+    
+    if ($EWSService -eq $null) {
+        throw "$($FunctionName): EWS connection has not been established. Create a new connection with Connect-EWS first."
+    }
 
-            
+    if( -not [string]::IsNullOrEmpty($Folder) ) {
+        $folderid = Get-EWSFolder -EWSService $EWSService -FolderPath $Folder -Mailbox $Mailbox
+    }
+    else {
+        $folderid = Get-EWSFolder -EWSService $EWSService -FolderObject Contacts -Mailbox $Mailbox
+    }
+    
+    # Get the parent folder ID
+    $type = ("System.Collections.Generic.List"+'`'+"1") -as "Type"
+    $type = $type.MakeGenericType("Microsoft.Exchange.WebServices.Data.FolderId" -as "Type")
+    $ParentFolderIds = [Activator]::CreateInstance($type)
+    $ParentFolderIds.Add($folderid.Id)
+
+    try {
+        $ncCol = @($EWSService.ResolveName($EmailAddress,$ParentFolderIds,$SearchType,$true))
+    }
+    catch {
+        throw "$($FunctionName): Unable to resolve contact $EmailAddress"
+    }
+    foreach($Result in $ncCol) {
+        # If the Contact property is null then this is likely just a user contact
+        if($Result.Contact -eq $null) {
+            if(($Result.Mailbox.Address.ToLower() -eq $EmailAddress.ToLower()) -or $Partial){
+                # Convert to a full EWS contact and return
+                Write-Verbose "$($FunctionName): Returning contact from the mailbox contacts."
+                [ews_contact]::Bind($EWSService,$Result.Mailbox.Id)
+            }
+        }
+        # Otherwise it was probably found in the directory.
+        else{
+            if(($Result.Mailbox.Address.ToLower() -eq $EmailAddress.ToLower()) -or $Partial){
+                if($Result.Mailbox.MailboxType -eq [ews_mailboxtype]::Mailbox){
+                    $UserDn = Get-EWSUserDN -EWSService $EWSService -EmailAddress $Result.Mailbox.Address
+                    $ncCola = $EWSService.ResolveName($UserDn,$ParentFolderIds,$SearchType,$true)
+                    Write-Verbose ("$($FunctionName): Number of matching Contacts Found - " + $ncCola.Count)
+                    foreach($aResult in $ncCola){
+                        Write-Verbose "$($FunctionName): Returning contact from the directory."
+                        $aResult.Contact
+                    }
+                }
+            }
         }
     }
 }

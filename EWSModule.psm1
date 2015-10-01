@@ -8,7 +8,7 @@
 # Used to track if we are setting SSL work around globally or not.
 [bool]$IsSSLWorkAroundInPlace = $false
 
-# A bunch of custom type accelerators to make the code look much less insane
+# A bunch of custom type accelerators to make the code look much less insane ( or more depending how you look at it I suppose )
 $EWSAccels = @{
     'ews_basepropset'='Microsoft.Exchange.WebServices.Data.BasePropertySet'
     'ews_connidtype'='Microsoft.Exchange.WebServices.Data.ConnectingIdType'
@@ -47,6 +47,9 @@ $EWSAccels = @{
     'ews_legacyfreebusystatus'='Microsoft.Exchange.WebServices.Data.LegacyFreeBusyStatus'
     'ews_autod'='Microsoft.Exchange.WebServices.Autodiscover.AutodiscoverService'
     'ews_usersettingname'='Microsoft.Exchange.WebServices.Autodiscover.UserSettingName'
+    'ews_contact' = 'Microsoft.Exchange.WebServices.Data.Contact'
+    'ews_mailboxtype' = 'Microsoft.Exchange.WebServices.Data.MailboxType'
+    'ews_exchver' = 'Microsoft.Exchange.WebServices.Data.ExchangeVersion'
 }
 
 $ewsdllpaths = @( 

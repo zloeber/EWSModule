@@ -66,10 +66,10 @@
         if (Get-EWSModuleInitializationState) {
             $accelerators = [PSObject].Assembly.GetType('System.Management.Automation.TypeAccelerators')::get
             $accelkeyscopy = @{}
-            $accelerators.Keys | Where {$_ -like "ews_*"} | Foreach { $accelkeyscopy.$_ = $accelkeys[$_] }
+            $accelerators.Keys | Where {$_ -like "ews_*"} | Foreach { $accelkeyscopy.$_ = $EWSAccels[$_] }
             foreach ( $key in $accelkeyscopy.Keys ) {
                 Write-Verbose "UnInitialize-EWS: Removing type accelerator - $($key)"
-                $accelerators::Remove("$($key)") | Out-Null
+                $accelerators.Remove($key) | Out-Null
             }
             Write-Verbose ("$($FunctionName): Custom type accelerators removed!")
             Set-EWSModuleInitializationState $false

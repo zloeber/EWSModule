@@ -1,12 +1,12 @@
-function New-EWSCalendarEntry {
+﻿function New-EWSCalendarEntry {
     # Returns an appointment to be manipulated or saved later
     [CmdletBinding()]
     param(
         [parameter(Position=0, HelpMessage='Connected EWS object.')]
         $EWSService,
         [parameter(HelpMessage = 'Free/busy status.')]
-        [ValidateNotNullOrEmpty()]
-        [ews_legacyfreebusystatus[]]$FreeBusyStatus = [System.Enum]::GetValues([ews_legacyfreebusystatus]),
+        [ValidateParameterSet('Free','Tentative','Busy','OOF','WorkingElsewhere','NoData')]
+        [ews_legacyfreebusystatus[]]$FreeBusyStatus,
         [bool]$IsAllDayEvent = $true,
         [bool]$IsReminderSet = $false,
         [datetime]$Start = (Get-Date),

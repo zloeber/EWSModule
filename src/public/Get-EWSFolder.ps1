@@ -14,12 +14,12 @@
         Force target a public folder instead.
 
     .EXAMPLE
-        PS > 
-        PS > 
+        PS > Get-EWSFolder -FolderObject Contacts
 
         Description
         -----------
-        TBD
+        Return the Folder object for the currently connected EWSService account of the well known 'contacts' folder
+        ([Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::contacts)
 
     .NOTES
        Author: Zachary Loeber
@@ -28,15 +28,25 @@
        Version History
        1.0.0 - Initial release
     #>
-    [CmdletBinding()]
+    [CmdletBinding(DefaultParametersetName='FolderAsString')]
     param(
-        [parameter(HelpMessage='Connected EWS object.')]
+        [parameter(Position=0, HelpMessage='Connected EWS object.')]
+        [parameter(ParameterSetName='FolderAsString')]
+        [parameter(ParameterSetName='FolderAsObject')]
         [ews_service]$EWSService,
         [parameter(Position=1, HelpMessage='Mailbox of folder.')]
+        [parameter(ParameterSetName='FolderAsString')]
+        [parameter(ParameterSetName='FolderAsObject')]
         [string]$Mailbox,
         [parameter(Position=2, HelpMessage='Folder path.')]
+        [parameter(ParameterSetName='FolderAsString')]
         [string]$FolderPath,
-        [parameter(Position=2, HelpMessage='Public Folder Path?')]
+        [parameter(Position=2, HelpMessage='Well known folder object.')]
+        [parameter(ParameterSetName='FolderAsObject')]
+        [ValidateSet('Calendar','Contacts','DeletedItems','Drafts','Inbox','Journal','Notes','Outbox','SentItems','Tasks','MsgFolderRoot','PublicFoldersRoot','Root','JunkEmail','SearchFolders','VoiceMail','RecoverableItemsRoot','RecoverableItemsDeletions','RecoverableItemsVersions','RecoverableItemsPurges','ArchiveRoot','ArchiveMsgFolderRoot','ArchiveDeletedItems','ArchiveRecoverableItemsRoot','ArchiveRecoverableItemsDeletions','ArchiveRecoverableItemsVersions','ArchiveRecoverableItemsPurges','SyncIssues','Conflicts','LocalFailures','ServerFailures','RecipientCache','QuickContacts','ConversationHistory','ToDoSearch')]
+        [ews_wellknownfolder]$FolderObject,
+        [parameter(Position=3, HelpMessage='Are you targeting a public Folder Path?')]
+        [parameter(ParameterSetName='FolderAsString')]
         [switch]$PublicFolder
     )
     # Pull in all the caller verbose,debug,info,warn and other preferences
@@ -57,42 +67,83 @@
     }
     
     # Return a reference to a folder specified by path 
-    if ($PublicFolders) { 
-        $mbx = '' 
-        $Folder = [ews_folder]::Bind($EWSService, [ews_wellknownfolder]::PublicFoldersRoot) 
-    } 
-    else {
-        $email = Get-EWSTargettedMailbox -EWSService $EWSService -Mailbox $Mailbox
-        $mbx = New-Object ews_mailbox( $email ) 
-        $folderId = New-Object ews_folderid([ews_wellknownfolder]::MsgFolderRoot, $mbx ) 
-        $Folder = [ews_folder]::Bind($EWSService, $folderId) 
-    } 
- 
-    if ($FolderPath -ne '\') {
-        $PathElements = $FolderPath -split '\\' 
-        For ($i=0; $i -lt $PathElements.Count; $i++) { 
-            if ($PathElements[$i]) { 
-                $View = New-Object  ews_folderview(2,0) 
-                $View.PropertySet = [ews_basepropset]::IdOnly
-                $SearchFilter = New-Object ews_searchfilter_isequalto([ews_schema_folder]::DisplayName, $PathElements[$i])
-                $FolderResults = $Folder.FindFolders($SearchFilter, $View) 
-                if ($FolderResults.TotalCount -ne 1) { 
-                    # We have either none or more than one folder returned... Either way, we can't continue 
-                    $Folder = $null 
-                    Write-Verbose "$($FunctionName): Failed to find $($PathElements[$i]), path requested was $FolderPath"
-                    break 
+    
+    switch ($PsCmdlet.ParameterSetName) { 
+        'FolderAsString' {
+            if ($PublicFolder) { 
+                $mbx = ''
+                try {
+                    $Folder = [ews_folder]::Bind($EWSService, [ews_wellknownfolder]::PublicFoldersRoot) 
                 }
-                 
-                if (-not [String]::IsNullOrEmpty(($mbx))) {
-                    $folderId = New-Object ews_folderid($FolderResults.Folders[0].Id, $mbx ) 
-                    $Folder = [ews_folder]::Bind($service, $folderId) 
+                catch {
+                    Write-Warning "$($FunctionName): Unable to find a public folder server or database to connect to."
+                    return $null
+                }
+            }
+            else {
+                $email = Get-EWSTargettedMailbox -EWSService $EWSService -Mailbox $Mailbox
+                $mbx = New-Object ews_mailbox($email)
+                $FolderID = New-Object ews_folderid([ews_wellknownfolder]::MsgFolderRoot, $mbx )
+            }
+            
+            if ($FolderPath -ne '\') {
+                $PathElements = $FolderPath -split '\\' 
+                For ($i=0; $i -lt $PathElements.Count; $i++) { 
+                    if ($PathElements[$i]) { 
+                        $View = New-Object ews_folderview(2,0) 
+                        $View.PropertySet = [ews_basepropset]::IdOnly
+                        $SearchFilter = New-Object ews_searchfilter_isequalto([ews_schema_folder]::DisplayName, $PathElements[$i])
+                        $FolderResults = $Folder.FindFolders($SearchFilter, $View) 
+                        if ($FolderResults.TotalCount -ne 1) { 
+                            # We have either none or more than one folder returned... Either way, we can't continue 
+                            Write-Verbose "$($FunctionName): Failed to find $($PathElements[$i]), path requested was $FolderPath"
+                            return $null
+                        }
+                         
+                        if (-not [String]::IsNullOrEmpty(($mbx))) {
+                            $folderId = New-Object ews_folderid($FolderResults.Folders[0].Id, $mbx) 
+                            try {
+                                $Folder = [ews_folder]::Bind($service, $folderId) 
+                            }
+                            catch {
+                                Write-Warning "$($FunctionName): Unable to connect to the specified folder. Check that you have permissions to access this mailbox"
+                                return $null
+                            }
+                        } 
+                        else {
+                            try {
+                                $Folder = [ews_folder]::Bind($service, $FolderResults.Folders[0].Id)
+                            }
+                            catch {
+                                Write-Warning "$($FunctionName): Unable to connect to the specified folder. Check that you have permissions to access this mailbox"
+                                return $null
+                            }
+                        } 
+                    } 
                 } 
-                else {
-                    $Folder = [ews_folder]::Bind($service, $FolderResults.Folders[0].Id) 
-                } 
-            } 
-        } 
+            }
+            else {
+                try {
+                    $Folder = [ews_folder]::Bind($EWSService, $FolderID)
+                }
+                catch {
+                    Write-Warning "$($FunctionName): Unable to connect to the specified folder. Check that you have permissions to access this mailbox"
+                    return $null
+                }
+            }
+        }
+        'FolderAsObject' {
+            $email = Get-EWSTargettedMailbox -EWSService $EWSService -Mailbox $Mailbox
+            $mbx = New-Object ews_mailbox($email)
+            $FolderID = New-Object ews_folderid($FolderObject, $mbx)
+            try {
+                $Folder = [ews_folder]::Bind($EWSService, $FolderID)
+            }
+            catch {
+                Write-Warning "$($FunctionName): Unable to connect to the specified folder. Check that you have permissions to access this mailbox"
+                return $null
+            }
+        }
     }
-
     return $Folder 
 }
