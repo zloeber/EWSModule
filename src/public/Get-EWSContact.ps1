@@ -1,9 +1,9 @@
 ﻿function Get-EWSContact {
     <# 
     .SYNOPSIS 
-        Gets a Contact in a Contact folder in a Mailbox using the  Exchange Web Services API 
+        Gets a single contact in a Contact folder within a mailbox using the Exchange Web Services API 
     .DESCRIPTION 
-        Gets a Contact in a Contact folder in a Mailbox using the  Exchange Web Services API 
+        Gets a single contact in a Contact folder within a mailbox using the Exchange Web Services API 
     .EXAMPLE
         Example 1 To get a Contact from a Mailbox's default contacts folder
         Get-EWSContact -MailboxName mailbox@domain.com -EmailAddress contact@email.com

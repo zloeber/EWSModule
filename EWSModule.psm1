@@ -63,15 +63,20 @@ $modCertCallback = $null
 
 #region Methods
 Get-ChildItem $ScriptPath/src/private -Recurse -Filter "*.ps1" -File | Foreach { 
-    Write-Output "Dot sourcing private function: $($_.Name)"
+    Write-Verbose "Dot sourcing private script file: $($_.Name)"
     . $_.FullName
 }
 
 # Load and export methods
 Get-ChildItem $ScriptPath/src/public -Recurse -Filter "*.ps1" -File | Foreach { 
-    Write-Output "Dot sourcing public function: $($_.Name)"
+    Write-Verbose "Dot sourcing public script file: $($_.Name)"
     . $_.FullName
-    Export-ModuleMember ($_.Name -replace '.ps1','')
+
+    # Find all the functions defined no deeper than the first level deep and export it.
+    # This looks ugly but allows us to not keep any uneeded variables in memory that are not related to the module.
+    ([System.Management.Automation.Language.Parser]::ParseInput((Get-Content -Path $_.FullName -Raw), [ref]$null, [ref]$null)).FindAll({ $args[0] -is [System.Management.Automation.Language.FunctionDefinitionAst] }, $false) | Foreach {
+        Export-ModuleMember $_.Name
+    }
 }
 #endregion Methods
 
