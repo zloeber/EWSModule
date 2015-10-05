@@ -19,15 +19,15 @@
     #>
     [CmdletBinding()] 
     param(
-        [parameter(HelpMessage='Connected EWS object.')]
+        [parameter(HelpMessage = 'Connected EWS object.')]
         [ews_service]$EWSService,
-        [parameter(Position=1, HelpMessage='Mailbox to target.')]
+        [parameter(Position = 1, HelpMessage = 'Mailbox to target.')]
         [string]$Mailbox,
-        [Parameter(Position=2, Mandatory=$true)]
+        [Parameter(Position = 2, Mandatory = $true)]
         [string]$EmailAddress,
-        [Parameter(Position=3)]
+        [Parameter(Position = 3)]
         [string]$Folder,
-        [Parameter(Position=4)]
+        [Parameter(Position = 4)]
         [ValidateSet('DirectoryOnly','DirectoryThenContacts','ContactsOnly','ContactsThenDirectory')]
         [ews_resolvenamelocation]$SearchType = 'ContactsThenDirectory',
         [Parameter(Position=5)]

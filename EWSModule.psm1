@@ -1,5 +1,5 @@
 ﻿#region Private Variables
-# Privately set variable to track if we have gone through the Initialize-EWS function yet.
+# Track if we have gone through the Initialize-EWS function yet.
 [bool]$EWSModuleInitialized = $false
 
 # Current script path

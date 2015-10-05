@@ -1,5 +1,4 @@
-﻿# Run this file to install the %%ModuleName%% PowerShell module with the following 
-# in an administrative PowerShell prompt:
+﻿# Run this in an administrative PowerShell prompt to install the EWSModule PowerShell module:
 #
 # 	iex (New-Object Net.WebClient).DownloadString("https://github.com/zloeber/EWSModule/raw/master/Install.ps1")
 

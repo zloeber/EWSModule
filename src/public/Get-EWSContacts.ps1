@@ -1,52 +1,72 @@
 ﻿function Get-EWSContacts {
     <# 
     .SYNOPSIS 
-        Gets contacts in a Contact folder in a Mailbox using the  Exchange Web Services API 
+        Gets all contacts in a Contact folder in a Mailbox using the Exchange Web Services API 
      
-    .DESCRIPTION 
-        Gets contacts in a Contact folder in a Mailbox using the  Exchange Web Services API 
+    .DESCRIPTION
+        Gets all contacts in a Contact folder in a Mailbox using the Exchange Web Services API 
       
     .EXAMPLE
-        To get a Contact from a Mailbox's default contacts folder
-        Get-EWSContacts -MailboxName mailbox@domain.com
+        To get all contacts from a Mailbox's default contacts folder
+        Get-EWSContacts -Mailbox mailbox@domain.com
     .EXAMPLE
         To get all the Contacts from subfolder of the Mailbox's default contacts folder
-        Get-EWSContacts -MailboxName mailbox@domain.com -Folder \Contact\test
-        
+        Get-EWSContacts -Mailbox mailbox@domain.com -Folder \Contact\test
     #>
-   [CmdletBinding()] 
-    param( 
-        [Parameter(Position=0, Mandatory=$true)] [string]$MailboxName,
-        [Parameter(Position=1, Mandatory=$true)] [System.Management.Automation.PSCredential]$Credentials,
-        [Parameter(Position=2, Mandatory=$false)] [string]$Folder,
-        [Parameter(Position=3, Mandatory=$false)] [switch]$useImpersonation
+    [CmdletBinding()] 
+    param(
+        [parameter(HelpMessage = 'Connected EWS object.')]
+        [ews_service]$EWSService,
+        [parameter(Position = 1, HelpMessage = 'Mailbox to target.')]
+        [string]$Mailbox,
+        [Parameter(Position = 2, Mandatory = $true)]
+        [string]$EmailAddress,
+        [Parameter(Position = 3)]
+        [string]$Folder,
+        [Parameter(Position = 4)]
+        [ValidateSet('DirectoryOnly','DirectoryThenContacts','ContactsOnly','ContactsThenDirectory')]
+        [ews_resolvenamelocation]$SearchType = 'ContactsThenDirectory',
+        [Parameter(Position=5)]
+        [switch]$Partial
     )
-    $service = Connect-Exchange -MailboxName $MailboxName -Credential $Credentials
-    if($useImpersonation.IsPresent){
-        $service.ImpersonatedUserId = new-object Microsoft.Exchange.WebServices.Data.ImpersonatedUserId([Microsoft.Exchange.WebServices.Data.ConnectingIdType]::SmtpAddress, $MailboxName)
+
+    # Pull in all the caller verbose,debug,info,warn and other preferences
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
+    $FunctionName = $MyInvocation.MyCommand
+    
+    if (-not (Get-EWSModuleInitializationState)) {
+        throw "$($FunctionName): EWS Module has not been initialized. Try running Initialize-EWS to rectify."
     }
-    $folderid= new-object Microsoft.Exchange.WebServices.Data.FolderId([Microsoft.Exchange.WebServices.Data.WellKnownFolderName]::Contacts,$MailboxName)   
-    if($Folder){
-        $Contacts = Get-ContactFolder -service $service -FolderPath $Folder -SmptAddress $MailboxName
+    
+    if ($EWSService -eq $null) {
+        Write-Verbose "$($FunctionName): Using module local ews service object"
+        $EWSService = Get-EWSService
     }
-    else{
-        $Contacts = [Microsoft.Exchange.WebServices.Data.Folder]::Bind($service,$folderid)
+    
+    if ($EWSService -eq $null) {
+        throw "$($FunctionName): EWS connection has not been established. Create a new connection with Connect-EWS first."
     }
-    if($service.URL){
-        $SfSearchFilter = new-object Microsoft.Exchange.WebServices.Data.SearchFilter+IsEqualTo([Microsoft.Exchange.WebServices.Data.ItemSchema]::ItemClass,"IPM.Contact") 
-        #Define ItemView to retrive just 1000 Items    
-        $ivItemView =  New-Object Microsoft.Exchange.WebServices.Data.ItemView(1000)    
-        $fiItems = $null    
-        do {    
-            $fiItems = $service.FindItems($Contacts.Id,$SfSearchFilter,$ivItemView)    
-            if($fiItems.Items.Count -gt 0){
-                $psPropset = new-object Microsoft.Exchange.WebServices.Data.PropertySet([Microsoft.Exchange.WebServices.Data.BasePropertySet]::FirstClassProperties)  
-                [Void]$service.LoadPropertiesForItems($fiItems,$psPropset)  
-                foreach($Item in $fiItems.Items){      
-                    Write-Output $Item    
-                }
+
+    if( -not [string]::IsNullOrEmpty($Folder) ) {
+        $folderid = Get-EWSFolder -EWSService $EWSService -FolderPath $Folder -Mailbox $Mailbox
+    }
+    else {
+        $folderid = Get-EWSFolder -EWSService $EWSService -FolderObject Contacts -Mailbox $Mailbox
+    }
+
+    $SfSearchFilter = New-Object ews_searchfilter_isequalto([ews_schema_item]::ItemClass,"IPM.Contact")
+    $ivItemView =  New-Object ews_itemview(1000)
+    $fiItems = $null
+
+    do {
+        $fiItems = $EWSService.FindItems($folderid.Id,$SfSearchFilter,$ivItemView)
+        if($fiItems.Items.Count -gt 0) {
+            $psPropset = new-object ews_propset([ews_basepropset]::FirstClassProperties)
+            [Void]$EWSService.LoadPropertiesForItems($fiItems,$psPropset)
+            foreach($Item in $fiItems.Items) {
+                Write-Output $Item
             }
-            $ivItemView.Offset += $fiItems.Items.Count    
-        } while($fiItems.MoreAvailable -eq $true) 
-    }
+        }
+        $ivItemView.Offset += $fiItems.Items.Count    
+    } while($fiItems.MoreAvailable -eq $true) 
 }
