@@ -1,4 +1,30 @@
 function Set-EWSMailboxImpersonation {
+    <# 
+    .SYNOPSIS 
+        Set the impersonation for a mailbox.
+    .DESCRIPTION 
+        Set the impersonation for a mailbox.
+    .PARAMETER EWSService
+        Exchange web service connection object to use. The default is using the currently connected session.
+    .PARAMETER Mailbox
+        Mailbox to target.
+    .PARAMETER SkipValidation
+        Do not validate if you have impersonation rights for the mailbox (can speed things up quite a bit)
+
+    .EXAMPLE
+        Set-EWSMailboxImpersonation -Mailbox mailbox@domain.com
+
+        Description
+        --------------
+        Set impersonation mode for the current connected EWS user for mailbox@domain.com
+
+    .NOTES
+        Author: Zachary Loeber
+        Site: http://www.the-little-things.net/
+        Requires: Powershell 3.0
+        Version History
+        1.0.0 - Initial release
+    #>
     [CmdletBinding()]
     param(
         [parameter(Position=0, HelpMessage='Connected EWS object.')]
@@ -7,7 +33,9 @@ function Set-EWSMailboxImpersonation {
         [string]$Mailbox,
         [parameter(Position=2, HelpMessage='Do not attempt to validate rights against this mailbox (can speed up operations)')]
         [switch]$SkipValidation
-    )    
+    )
+  
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     $FunctionName = $MyInvocation.MyCommand
 
     if (-not (Get-EWSModuleInitializationState)) {

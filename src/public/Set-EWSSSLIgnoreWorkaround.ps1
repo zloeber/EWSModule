@@ -1,4 +1,20 @@
 Function Set-EWSSSLIgnoreWorkaround {
+      <#
+    .SYNOPSIS
+    Sets the module to ignore SSL checking.
+    .DESCRIPTION
+    Sets the module to ignore SSL checking.
+     
+    .EXAMPLE
+    Set-EWSSSLIgnoreWorkaround        
+
+    .NOTES
+    Author: Zachary Loeber
+    Site: http://www.the-little-things.net/
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
+    #>
     if (-not $script:IsSSLWorkAroundInPlace) {
         $Provider=New-Object Microsoft.CSharp.CSharpCodeProvider
         $Compiler=$Provider.CreateCompiler()

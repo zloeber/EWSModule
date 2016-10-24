@@ -1,0 +1,24 @@
+﻿# Example of using EWSModule to remove all recurring appointments for a user mailbox
+# Uses impersonation to accomplish the task.
+
+$UserMailbox = 'test.user@contoso.org'
+
+Write-Host 'Requesting o365 credentials of an account that has impersonation rights'
+$creds = Get-Credential
+
+Write-Host 'Importing EWS module'
+Import-Module .\EWSModule.psm1
+
+Write-Host 'Downloading required EWS dll from Microsoft...'
+Install-EWSDLL
+
+Write-Host 'Initializing EWS Module'
+if (Initialize-EWS) {
+    Write-Host 'Connecting to EWS, please be patient...'
+    Connect-EWS -Credential $creds -ExchangeVersion 'Exchange2013_SP1'
+    Set-EWSMailboxImpersonation -Mailbox $UserMailbox
+    Get-EWSCalendarAppointments -IsRecurring | Remove-EWSCalendarAppointment -verbose
+}
+else {
+    Write-Error 'EWS initialization failed!'
+}

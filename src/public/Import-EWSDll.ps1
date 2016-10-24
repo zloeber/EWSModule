@@ -17,13 +17,23 @@ function Import-EWSDll {
     as the Microsoft.Exchange.WebServices.dll file is extracted and available that should work.
     
     The EWS Managed API can be obtained from: http://www.microsoft.com/en-us/download/details.aspx?id=28952    
+
+    .NOTES
+       Author: Zachary Loeber
+       Site: http://www.the-little-things.net/
+       Requires: Powershell 3.0
+       Version History
+       1.0.0 - Initial release
     #>
     [CmdletBinding()]
     param (
         [parameter(Position=0)]
         [string]$EWSManagedApiPath
     )
+    
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     $FunctionName = $MyInvocation.MyCommand
+    
     $ewspaths = @()
     if (-not (Get-EWSDllLoadState)) {
         if (-not [string]::IsNullOrEmpty($EWSManagedApiPath)) {

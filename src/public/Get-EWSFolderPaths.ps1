@@ -9,17 +9,16 @@
     .PARAMETER RootFolderId
         Folder to target. Can target specific mailboxes with Get-EWSFolder
     .PARAMETER FolderCache
-        
+        Mailbox foldercache object
     .PARAMETER FolderPrefix
-        
+        I forget what this one does, you almost never have to pass it though.
 
     .EXAMPLE
-        PS > 
-        PS > 
+        Get-EWSFolderPaths
 
         Description
         -----------
-        TBD
+        Gets the paths of the currently connected mailbox.
 
     .NOTES
        Author: Zachary Loeber
@@ -32,9 +31,9 @@
     param (
         [parameter(Position=0, HelpMessage='Connected EWS object.')]
         [ews_service]$EWSService,
-        [Parameter(Mandatory=$true)] 
-        [Microsoft.Exchange.WebServices.Data.FolderId]$RootFolderId,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Position=1, Mandatory=$true)] 
+        [ews_folderid]$RootFolderId,
+        [Parameter(Position=2, Mandatory=$true)]
         [PSObject]$FolderCache,
         [Parameter(Position=3)]
         [String]$FolderPrefix

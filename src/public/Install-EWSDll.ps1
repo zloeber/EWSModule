@@ -5,6 +5,27 @@ function Install-EWSDll {
 
     .DESCRIPTION
     Attempts to download and extract the ews dll needed for this library.
+     
+    .PARAMETER Source
+    Web URL  to the EWSmanagedApi.msi file
+    .PARAMETER Destination
+    Destination for the extracted DLL
+    .PARAMETER SkipDownload
+    Extract the file from the EWSmanagedApi.msi file you have already pre-downloaded to .\EWSFiles\
+    
+    .EXAMPLE
+    Install-EWSDll
+    
+    Description
+    --------------
+    Attempts to download and extract the appropriate DLL for EWS from http://www.microsoft.com/en-us/download/details.aspx?id=28952
+    
+    .NOTES
+       Author: Zachary Loeber
+       Site: http://www.the-little-things.net/
+       Requires: Powershell 3.0
+       Version History
+       1.0.0 - Initial release
     #>
     [CmdLetBinding()]
     param(

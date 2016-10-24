@@ -1,9 +1,32 @@
 function Get-EmailAddressFromAD {
+    <#
+        .SYNOPSIS
+            Return the email address of a User ID from AD.
+        .DESCRIPTION
+            Return the email address of a User ID from AD.
+        .PARAMETER UserID
+            User ID to search for in AD.
+        .EXAMPLE
+            Get-EmailAddressFromAD -UserID jdoe
+
+            Description
+            -----------
+            Reterns the email address for jdoe from the domain.
+
+        .NOTES
+            Author: Zachary Loeber
+            Site: http://www.the-little-things.net/
+            Requires: Powershell 3.0
+            Version History
+            1.0.0 - Initial release
+    #>
     [CmdletBinding()]
     param(
         [parameter(Position=0, HelpMessage='ID to lookup. Defaults to current users SID')]
         [string]$UserID = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
     )
+
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     $FunctionName = $MyInvocation.MyCommand
     
     if (-not (Test-EmailAddressFormat $UserID)) {        

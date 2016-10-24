@@ -1,5 +1,4 @@
 ﻿function Get-EWSCalendarAppointments {
-    # 
     <#
     .SYNOPSIS
         Uses the much faster FindItems as opposed to FindAppointments to return calendar appointments.
@@ -96,12 +95,12 @@
 
     $email = Get-EWSTargettedMailbox -EWSService $EWSService -Mailbox $Mailbox
 
-    Write-Verbose "Get-EWSCalendarEnties: Attempting to gather calendar entries for $($email)"
+    Write-Verbose "$($FunctionName): Attempting to gather calendar entries for $($email)"
 
-    $MailboxToAccess = new-object ews_mailbox($email)
+    $MailboxToAccess = New-Object ews_mailbox($email)
 
     if ([string]::IsNullOrEmpty($FolderPath)) {
-        $FolderID = new-object ews_folderid([ews_wellknownfolder]::Calendar, $MailboxToAccess)
+        $FolderID = New-Object ews_folderid([ews_wellknownfolder]::Calendar, $MailboxToAccess)
     }
 
     $EWSCalFolder = [ews_calendarfolder]::Bind($EWSService, $FolderID)

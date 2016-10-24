@@ -19,7 +19,14 @@
     This function requires Exchange Web Services Managed API. From what I can tell you don't even need to install the msi. AS long
     as the Microsoft.Exchange.WebServices.dll file is extracted and available that should work.
     
-    The EWS Managed API can be obtained from: http://www.microsoft.com/en-us/download/details.aspx?id=28952    
+    The EWS Managed API can be obtained from: http://www.microsoft.com/en-us/download/details.aspx?id=28952
+
+    .NOTES
+       Author: Zachary Loeber
+       Site: http://www.the-little-things.net/
+       Requires: Powershell 3.0
+       Version History
+       1.0.0 - Initial release
     #>
     [CmdletBinding()]
     param (
@@ -28,6 +35,8 @@
         [parameter(Position=1)]
         [switch]$Uninitialize
     )
+
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     $FunctionName = $MyInvocation.MyCommand
     
     if (-not $Uninitialize) {

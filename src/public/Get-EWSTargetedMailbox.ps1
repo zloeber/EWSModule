@@ -6,15 +6,16 @@
         Return the intended targeted mailbox for operations. If an email address string is passed we will try to connect to it with non-impersonation rights.
         If the Mailbox parameter is empty or null then we will look at the ews object to see if impersonation is set and return that mailbox if found. Otherwise
         we use the ews object login ID.
+    .PARAMETER EWSService
+        Exchange web service connection object to use. The default is using the currently connected session.
     .PARAMETER Mailbox
         Mailbox to target. If none is provided, impersonation is checked and used if possible, otherwise the EWSService object mailbox is targeted.
     .EXAMPLE
-        PS > 
-        PS > 
+        Get-EWSTargetedMailbox -Mailbox jdoe
 
         Description
         -----------
-        TBD
+        Reterns the email address jdoe from the domain.
 
     .NOTES
        Author: Zachary Loeber
@@ -26,10 +27,12 @@
     [CmdletBinding()]
     param(
         [parameter(Position=0, HelpMessage='Connected EWS object.')]
-        $EWSService,
+        [ews_service]$EWSService,
         [parameter(Position=1, HelpMessage='Mailbox you are targeting.')]
         [string]$Mailbox
     )
+    
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     $FunctionName = $MyInvocation.MyCommand
     
     if (-not (Get-EWSModuleInitializationState)) {
@@ -55,7 +58,7 @@
                 $email = Get-EmailAddressFromAD $Mailbox
             }
             catch {
-                throw "$($FunctionName): Unable to get a mailbox"
+                throw "$($FunctionName): Unable to get a mailbox for this account from AD. Ensure you are running this from a domain joined computer."
             }
         }
     }
