@@ -5,6 +5,7 @@ schema: 2.0.0
 ---
 
 # Test-EWSAutodiscover
+
 ## SYNOPSIS
 This function uses the EWS Managed API to test the Exchange Autodiscover service.
 
@@ -50,7 +51,7 @@ Aliases:
 
 Required: True
 Position: 1
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -84,7 +85,7 @@ Aliases:
 
 Required: False
 Position: 3
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -115,7 +116,7 @@ Aliases:
 
 Required: False
 Position: 5
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -125,8 +126,16 @@ Accept wildcard characters: False
 ## OUTPUTS
 
 ## NOTES
+Author: Zachary Loeber
+Requires: Powershell 3.0
+Version History
+1.0.0 - Initial release
 
 ## RELATED LINKS
 
 [http://msdn.microsoft.com/en-us/library/dd633699%28v=EXCHG.80%29.aspx](http://msdn.microsoft.com/en-us/library/dd633699%28v=EXCHG.80%29.aspx)
+
+[http://www.the-little-things.net/](http://www.the-little-things.net/)
+
+[https://www.github.com/zloeber/EWSModule](https://www.github.com/zloeber/EWSModule)
 

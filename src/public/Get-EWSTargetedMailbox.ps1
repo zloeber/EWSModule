@@ -1,9 +1,9 @@
-﻿function Get-EWSTargettedMailbox {
+﻿function Get-EWSTargetedMailbox {
     <#
     .SYNOPSIS
-        Return the intended targeted mailbox for ews operations.
+        Return the intended targeted email address of a mailbox for ews operations.
     .DESCRIPTION
-        Return the intended targeted mailbox for operations. If an email address string is passed we will try to connect to it with non-impersonation rights.
+        Return the intended targeted email for a mailbox for operations. If an email address string is passed we will try to connect to it with non-impersonation rights.
         If the Mailbox parameter is empty or null then we will look at the ews object to see if impersonation is set and return that mailbox if found. Otherwise
         we use the ews object login ID.
     .PARAMETER EWSService
@@ -49,6 +49,7 @@
         throw "$($FunctionName): EWS connection has not been established. Create a new connection with Connect-EWS first."
     }
     
+    # If an email address/mailbox was passed then try to validate it
     if (-not [string]::IsNullOrEmpty($Mailbox)) {
         if (Test-EmailAddressFormat $Mailbox) {
             $email = $Mailbox
@@ -63,13 +64,16 @@
         }
     }
     else {
+        # Otherwise look to see if we are doing impersonation
         if ($EWSService.ImpersonatedUserId -ne $null) {
             $impID = $EWSService.ImpersonatedUserId.Id
         }
+        # if not then try the currently connected user ID
         else {
             $impID = $EWSService.Credentials.Credentials.UserName
         }
         
+        # if the username is not already in email format try to resolve it to email format via EWS.
         if (-not (Test-EmailAddressFormat $impID)) {
             try {
                 $email = ($EWSService.ResolveName("smtp:$($ImpID)@",[ews_resolvenamelocation]::DirectoryOnly, $false)).Mailbox -creplace '(?s)^.*\:', '' -creplace '>',''

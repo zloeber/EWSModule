@@ -1,17 +1,18 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Get-EWSOOFSettings
+
 ## SYNOPSIS
 Get the out of office settings for a mailbox.
 
 ## SYNTAX
 
 ```
-Get-EWSOOFSettings [[-EWSService] <ExchangeService>] [-Mailbox] <String>
+Get-EWSOOFSettings [[-EWSService] <ExchangeService>] [[-Mailbox] <String>]
 ```
 
 ## DESCRIPTION
@@ -41,7 +42,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -54,9 +55,9 @@ Type: String
 Parameter Sets: (All)
 Aliases: 
 
-Required: True
+Required: False
 Position: 2
-Default value: 
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```

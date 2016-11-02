@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Get-EWSContacts
+
 ## SYNOPSIS
 Gets all contacts in a Contact folder in a Mailbox using the Exchange Web Services API
 
@@ -22,17 +23,17 @@ Gets all contacts in a Contact folder in a Mailbox using the Exchange Web Servic
 
 ### -------------------------- EXAMPLE 1 --------------------------
 ```
-To get all contacts from a Mailbox's default contacts folder
+Get-EWSContacts -Mailbox mailbox@domain.com
 ```
 
-Get-EWSContacts -Mailbox mailbox@domain.com
+Get all contacts from a Mailbox's default contacts folder
 
 ### -------------------------- EXAMPLE 2 --------------------------
 ```
-To get all the Contacts from subfolder of the Mailbox's default contacts folder
+Get-EWSContacts -Mailbox mailbox@domain.com -Folder \Contact\test
 ```
 
-Get-EWSContacts -Mailbox mailbox@domain.com -Folder \Contact\test
+Get all the Contacts from subfolder of the Mailbox's default contacts folder
 
 ## PARAMETERS
 
@@ -47,7 +48,7 @@ Aliases:
 
 Required: False
 Position: Named
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -63,7 +64,7 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -78,7 +79,7 @@ Aliases:
 
 Required: True
 Position: 3
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -93,7 +94,7 @@ Aliases:
 
 Required: False
 Position: 4
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -136,10 +137,13 @@ Accept wildcard characters: False
 
 ## NOTES
 Author: Zachary Loeber
-Site: http://www.the-little-things.net/
 Requires: Powershell 3.0
 Version History
 1.0.0 - Initial release
 
 ## RELATED LINKS
+
+[http://www.the-little-things.net/](http://www.the-little-things.net/)
+
+[https://www.github.com/zloeber/EWSModule](https://www.github.com/zloeber/EWSModule)
 

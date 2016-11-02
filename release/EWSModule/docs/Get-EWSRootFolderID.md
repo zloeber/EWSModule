@@ -1,36 +1,34 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
-# Get-EWSTargettedMailbox
+# Get-EWSRootFolderID
+
 ## SYNOPSIS
-Return the intended targeted mailbox for ews operations.
+Return a mailbox folder object.
 
 ## SYNTAX
 
 ```
-Get-EWSTargettedMailbox [[-EWSService] <ExchangeService>] [[-Mailbox] <String>]
+Get-EWSRootFolderID [[-EWSService] <ExchangeService>] [[-Mailbox] <String>] [[-FolderBase] <String>]
 ```
 
 ## DESCRIPTION
-Return the intended targeted mailbox for operations.
-If an email address string is passed we will try to connect to it with non-impersonation rights.
-If the Mailbox parameter is empty or null then we will look at the ews object to see if impersonation is set and return that mailbox if found.
-Otherwise
-we use the ews object login ID.
+Return a mailbox folder object.
 
 ## EXAMPLES
 
 ### -------------------------- EXAMPLE 1 --------------------------
 ```
-Get-EWSTargetedMailbox -Mailbox jdoe
+Get-EWSRootFolderID -EWSService $EWSService -FolderRoot Contacts -Mailbox 'jdoe@contoso.com'
 ```
 
 Description
 -----------
-Reterns the email address jdoe from the domain.
+Return the Folder object for the currently connected EWSService account of the well known 'contacts' folder
+(\[Microsoft.Exchange.WebServices.Data.WellKnownFolderName\]::contacts)
 
 ## PARAMETERS
 
@@ -45,7 +43,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -61,7 +59,22 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: 
+Default value: None
+Accept pipeline input: False
+Accept wildcard characters: False
+```
+
+### -FolderBase
+A well known folder base name (Inbox, Calendar, Contacts, et cetera..)
+
+```yaml
+Type: String
+Parameter Sets: (All)
+Aliases: 
+
+Required: False
+Position: 3
+Default value: MsgFolderRoot
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Get-EWSCalenderViewAppointments
+
 ## SYNOPSIS
 Uses a slower method for accessing and returning calendar appointments
 
@@ -27,8 +28,6 @@ Uses a slower method for accessing and returning calendar appointments
 
 PS \> 
 
-Description
------------
 TBD
 
 ## PARAMETERS
@@ -44,7 +43,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -60,7 +59,7 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -101,10 +100,13 @@ Accept wildcard characters: False
 
 ## NOTES
 Author: Zachary Loeber
-Site: http://www.the-little-things.net/
 Requires: Powershell 3.0
 Version History
 1.0.0 - Initial release
 
 ## RELATED LINKS
+
+[http://www.the-little-things.net/](http://www.the-little-things.net/)
+
+[https://www.github.com/zloeber/EWSModule](https://www.github.com/zloeber/EWSModule)
 

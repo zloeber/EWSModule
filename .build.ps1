@@ -74,6 +74,13 @@ $ExternalHelp = @"
     #>
 "@
 
+if ($OptionTranscriptEnabled) {
+    Write-Output 'Transcript logging: TRUE'
+    $TranscriptLog = Join-Path $BuildToolPath $OptionTranscriptLogFile
+    Write-Output "TranscriptLog: $($TranscriptLog)"
+    Start-Transcript -Path $TranscriptLog -Append -WarningAction:SilentlyContinue
+}
+
 #Synopsis: Validate system requirements are met
 task ValidateRequirements {
     Write-Host -NoNewLine '      Running Powershell version 5?'
@@ -338,12 +345,7 @@ task AnalyzeScript -After CreateModulePSM1 -if {$OptionAnalyzeCode} {
         $AnalysisErrors
         Write-Host
         Write-Host "Note that this was from the script analysis run against $StageReleasePath"
-        $yes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "End the build."
-        $no = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Stop the build."
-        $ContinueBuildPrompt = [System.Management.Automation.Host.ChoiceDescription[]]($yes, $no)
-        if (($host.ui.PromptForChoice('Stop the build?', 'Should the build stop here?', $ContinueBuildPrompt, 0)) -eq 0) {
-            throw 'Script Analysis came up with some errors!'
-        }
+        Prompt-ForBuildBreak -CustomError $AnalysisErrors
     }
 }
 
@@ -560,6 +562,15 @@ task BuildSessionCleanup {
     }
     Write-Output "      Removing $ModuleToBuild module  (if loaded)."
     Remove-Module $ModuleToBuild -Erroraction Ignore
+
+    # Dot source any post build cleanup scripts.
+    Get-ChildItem $BuildToolPath/cleanup -Recurse -Filter "*.ps1" -File | Foreach { 
+        Write-Output "      Dot sourcing cleanup script file: $($_.Name)"
+        . $_.FullName
+    }
+    if ($OptionTranscriptEnabled) {
+        Stop-Transcript -WarningAction:Ignore
+    }
 }
 
 # Synopsis: Install the current built module to the local machine

@@ -26,6 +26,8 @@ $ModuleDescription = 'An easier way to use EWS with Powershell'
 $OptionFormatCode = $false
 $OptionAnalyzeCode = $true
 $OptionCombineFiles = $true
+$OptionTranscriptEnabled = $true
+$OptionTranscriptLogFile = 'BuildTranscript.Log'
 
 # PlatyPS has been the cause of most of my build failures. This can help you isolate which functrion's CBH is causing you grief.
 $OptionRunPlatyPSVerbose = $true
@@ -34,7 +36,7 @@ $OptionRunPlatyPSVerbose = $true
 # Example: @('.\lib','.\data')
 $AdditionalModulePaths = @('.\examples')
 
-# Please leave anything below this line alone
+# !! Please leave anything below this line alone !!
 
 # Ensure we bomb out if any required information is missing
 $ModuleToBuild, $ModuleWebsite, $ModuleAuthor, $ModuleDescription | Foreach {

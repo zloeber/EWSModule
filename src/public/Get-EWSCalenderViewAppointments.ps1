@@ -1,32 +1,35 @@
 ﻿function Get-EWSCalenderViewAppointments {
     <#
     .SYNOPSIS
-        Uses a slower method for accessing and returning calendar appointments
+    Uses a slower method for accessing and returning calendar appointments
     .DESCRIPTION
-        Uses a slower method for accessing and returning calendar appointments
+    Uses a slower method for accessing and returning calendar appointments
     .PARAMETER EWSService
-        Exchange web service connection object to use. The default is using the currently connected session.
+    Exchange web service connection object to use. The default is using the currently connected session.
     .PARAMETER Mailbox
-        Mailbox to target. If none is provided, impersonation is checked and used if possible, otherwise the EWSService object mailbox is targeted.
+    Mailbox to target. If none is provided, impersonation is checked and used if possible, otherwise the EWSService object mailbox is targeted.
     .PARAMETER StartRange
-        Start of when to look for appointments.
+    Start of when to look for appointments.
     .PARAMETER EndRange
-        End of when to look for appointments.
+    End of when to look for appointments.
 
     .EXAMPLE
-        PS > 
-        PS > 
+    PS > 
+    PS > 
 
-        Description
-        -----------
-        TBD
+    TBD
+
+    .LINK
+    http://www.the-little-things.net/
+
+    .LINK
+    https://www.github.com/zloeber/EWSModule
 
     .NOTES
-       Author: Zachary Loeber
-       Site: http://www.the-little-things.net/
-       Requires: Powershell 3.0
-       Version History
-       1.0.0 - Initial release
+    Author: Zachary Loeber
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
     #>
     [CmdletBinding()]
     param(

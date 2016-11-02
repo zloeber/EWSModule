@@ -1,31 +1,34 @@
 ﻿function Remove-EWSCalendarAppointment {
     <#
     .SYNOPSIS
-        Remove a calendar appointment object from a mailbox.
+    Remove a calendar appointment object from a mailbox.
     .DESCRIPTION
-        Remove a calendar appointment object from a mailbox.
+    Remove a calendar appointment object from a mailbox.
     .PARAMETER EWSService
-        Exchange web service connection object to use. The default is using the currently connected session.
+    Exchange web service connection object to use. The default is using the currently connected session.
     .PARAMETER Appointment
-        EWS Calendar appointment object
+    EWS Calendar appointment object
     .PARAMETER DeleteMode
-        Method of deletion for the appointment. Can be 'HardDelete','SoftDelete', or 'MoveToDeletedItems'
+    Method of deletion for the appointment. Can be 'HardDelete','SoftDelete', or 'MoveToDeletedItems'
     .PARAMETER CancellationMode
-        How cancellation notices will be sent upon deletion. Can be 'SendToNone','SendOnlyToAll','SendOnlyToChanged','SendToAllAndSaveCopy', or 'SendToChangedAndSaveCopy'
+    How cancellation notices will be sent upon deletion. Can be 'SendToNone','SendOnlyToAll','SendOnlyToChanged','SendToAllAndSaveCopy', or 'SendToChangedAndSaveCopy'
 
     .EXAMPLE
-        PS > 
+    PS > Remove-EWSCalendarAppointment -Appointment $Appt -DeleteMode 'SoftDelete' -CancellationMode 'SendToAllAndSaveCopy'
 
-        Description
-        -----------
-        TBD
+    Removes the calendar appointment stored in $Appt using softdelete and sending a cancellation notice and saving a copy of the sent cancellation. 
+
+    .LINK
+    http://www.the-little-things.net/
+
+    .LINK
+    https://www.github.com/zloeber/EWSModule
 
     .NOTES
-       Author: Zachary Loeber
-       Site: http://www.the-little-things.net/
-       Requires: Powershell 3.0
-       Version History
-       1.0.0 - Initial release
+    Author: Zachary Loeber
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
     #>
     [CmdletBinding()]
     param(

@@ -1,49 +1,51 @@
 ﻿function Get-EWSCalendarAppointments {
     <#
     .SYNOPSIS
-        Uses the much faster FindItems as opposed to FindAppointments to return calendar appointments.
+    Uses the much faster FindItems as opposed to FindAppointments to return calendar appointments.
     .DESCRIPTION
-        Uses the much faster FindItems as opposed to FindAppointments to return calendar appointments.
+    Uses the much faster FindItems as opposed to FindAppointments to return calendar appointments.
     .PARAMETER EWSService
-        Exchange web service connection object to use. The default is using the currently connected session.
+    Exchange web service connection object to use. The default is using the currently connected session.
     .PARAMETER Mailbox
-        Mailbox to target. If none is provided, impersonation is checked and used if possible, otherwise the EWSService object mailbox is targeted.
+    Mailbox to target. If none is provided, impersonation is checked and used if possible, otherwise the EWSService object mailbox is targeted.
     .PARAMETER FolderPath
-        Path of folder in the form of /folder1/folder2
+    Path of folder in the form of /folder1/folder2
     .PARAMETER StartsAfter
-        Start date for the appointment(s) must be after this date
+    Start date for the appointment(s) must be after this date
     .PARAMETER StartsBefore
-        Start date for the appointment(s) must be before this date
+    Start date for the appointment(s) must be before this date
     .PARAMETER EndsAfter
-        nd date for the appointment(s) must be after this date
+    nd date for the appointment(s) must be after this date
     .PARAMETER EndsBefore
-        nd date for the appointment(s) must be before this date
+    nd date for the appointment(s) must be before this date
     .PARAMETER CreatedAfter
-        Only appointments created after the given date will be returned
+    Only appointments created after the given date will be returned
     .PARAMETER CreatedBefore
-        Only appointments created before the given date will be returned
+    Only appointments created before the given date will be returned
     .PARAMETER LastOccurrenceAfter
-        Only recurring appointments with a last occurrence date after the given date will be returned
+    Only recurring appointments with a last occurrence date after the given date will be returned
     .PARAMETER LastOccurrenceBefore
-        Only recurring appointments with a last occurrence date before the given date will be returned
+    Only recurring appointments with a last occurrence date before the given date will be returned
     .PARAMETER IsRecurring
-        If this switch is present, only recurring appointments are returned
+    If this switch is present, only recurring appointments are returned
     .PARAMETER ExtendedProperties
-        Filter results by custom extended properties.
+    Filter results by custom extended properties.
     .EXAMPLE
-        PS > 
-        PS > 
+    PS > 
 
-        Description
-        -----------
-        TBD
+    TBD
+
+    .LINK
+    http://www.the-little-things.net/
+
+    .LINK
+    https://www.github.com/zloeber/EWSModule
 
     .NOTES
-       Author: Zachary Loeber
-       Site: http://www.the-little-things.net/
-       Requires: Powershell 3.0
-       Version History
-       1.0.0 - Initial release
+    Author: Zachary Loeber
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
     #>
     [CmdletBinding()]
     param(

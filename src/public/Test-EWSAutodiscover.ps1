@@ -1,47 +1,58 @@
 function Test-EWSAutodiscover {
     <#
     .SYNOPSIS
-        This function uses the EWS Managed API to test the Exchange Autodiscover service.
+    This function uses the EWS Managed API to test the Exchange Autodiscover service.
 
     .DESCRIPTION
-        This function will retreive the Client Access Server URLs for a specified email address
-        by querying the autodiscover service of the Exchange server.
+    This function will retreive the Client Access Server URLs for a specified email address
+    by querying the autodiscover service of the Exchange server.
 
     .PARAMETER  EmailAddress
-        Specifies the email address for the mailbox that should be tested.
+    Specifies the email address for the mailbox that should be tested.
 
     .PARAMETER  Location
-        Set to External by default, but can also be set to Internal. This parameter controls whether
-        the internal or external URLs are returned.
-        
+    Set to External by default, but can also be set to Internal. This parameter controls whether
+    the internal or external URLs are returned.
+
     .PARAMETER  Credential
-        Specifies a user account that has permission to perform this action. Type a user name, such as 
-        "User01" or "Domain01\User01", or enter a PSCredential object, such as one from the Get-Credential cmdlet.
-        
+    Specifies a user account that has permission to perform this action. Type a user name, such as 
+    "User01" or "Domain01\User01", or enter a PSCredential object, such as one from the Get-Credential cmdlet.
+
     .PARAMETER  TraceEnabled
-        Use this switch parameter to enable tracing. This is used for debugging the XML response from the server.    
-        
+    Use this switch parameter to enable tracing. This is used for debugging the XML response from the server.    
+
     .PARAMETER  IgnoreSsl
-        Set to $true by default. If you do not want to ignore SSL warnings or errors, set this parameter to $false.
-        
+    Set to $true by default. If you do not want to ignore SSL warnings or errors, set this parameter to $false.
+
     .PARAMETER  Url
-        You can use this parameter to manually specifiy the autodiscover url.        
+    You can use this parameter to manually specifiy the autodiscover url.        
 
     .EXAMPLE
-        PS C:\> Test-Autodiscover -EmailAddress administrator@uclabs.ms -Location internal
-        
-        This example shows how to retrieve the internal autodiscover settings for a user.
+    PS C:\> Test-Autodiscover -EmailAddress administrator@uclabs.ms -Location internal
+
+    This example shows how to retrieve the internal autodiscover settings for a user.
 
     .EXAMPLE
-        PS C:\> Test-Autodiscover -EmailAddress administrator@uclabs.ms -Credential $cred
-        
-        This example shows how to retrieve the external autodiscover settings for a user. You can
-        provide credentials if you do not want to use the Windows credentials of the user calling
-        the function.
+    PS C:\> Test-Autodiscover -EmailAddress administrator@uclabs.ms -Credential $cred
+
+    This example shows how to retrieve the external autodiscover settings for a user. You can
+    provide credentials if you do not want to use the Windows credentials of the user calling
+    the function.
 
     .LINK
-        http://msdn.microsoft.com/en-us/library/dd633699%28v=EXCHG.80%29.aspx
+    http://msdn.microsoft.com/en-us/library/dd633699%28v=EXCHG.80%29.aspx
 
+    .LINK
+    http://www.the-little-things.net/
+
+    .LINK
+    https://www.github.com/zloeber/EWSModule
+
+    .NOTES
+    Author: Zachary Loeber
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
     #>
 
     [CmdletBinding()]
@@ -62,6 +73,8 @@ function Test-EWSAutodiscover {
         [Parameter(Position=4)]
         [String]$Url
     )
+
+    Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
 
     if (-not (Get-EWSModuleInitializationState)) {
         throw 'EWS Module has not been initialized. Try running Initialize-EWS to rectify.'

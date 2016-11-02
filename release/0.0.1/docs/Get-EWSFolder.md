@@ -1,25 +1,19 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Get-EWSFolder
+
 ## SYNOPSIS
 Return a mailbox folder object.
 
 ## SYNTAX
 
-### FolderAsString (Default)
 ```
 Get-EWSFolder [[-EWSService] <ExchangeService>] [[-Mailbox] <String>] [[-FolderPath] <String>]
- [[-FolderObject] <WellKnownFolderName>] [-PublicFolder]
-```
-
-### FolderAsObject
-```
-Get-EWSFolder [[-EWSService] <ExchangeService>] [[-Mailbox] <String>] [[-FolderPath] <String>]
- [[-FolderObject] <WellKnownFolderName>] [-PublicFolder]
+ [[-SearchBase] <String>]
 ```
 
 ## DESCRIPTION
@@ -29,11 +23,9 @@ Return a mailbox folder object.
 
 ### -------------------------- EXAMPLE 1 --------------------------
 ```
-Get-EWSFolder -FolderObject Contacts
+Get-EWSFolder -FolderRoot Contacts
 ```
 
-Description
------------
 Return the Folder object for the currently connected EWSService account of the well known 'contacts' folder
 (\[Microsoft.Exchange.WebServices.Data.WellKnownFolderName\]::contacts)
 
@@ -50,7 +42,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -66,7 +58,7 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -81,38 +73,22 @@ Aliases:
 
 Required: False
 Position: 3
-Default value: 
+Default value: \
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
 
-### -FolderObject
+### -SearchBase
 Well known folder object.
 
 ```yaml
-Type: WellKnownFolderName
-Parameter Sets: (All)
-Aliases: 
-Accepted values: Calendar, Contacts, DeletedItems, Drafts, Inbox, Journal, Notes, Outbox, SentItems, Tasks, MsgFolderRoot, PublicFoldersRoot, Root, JunkEmail, SearchFolders, VoiceMail, RecoverableItemsRoot, RecoverableItemsDeletions, RecoverableItemsVersions, RecoverableItemsPurges, ArchiveRoot, ArchiveMsgFolderRoot, ArchiveDeletedItems, ArchiveRecoverableItemsRoot, ArchiveRecoverableItemsDeletions, ArchiveRecoverableItemsVersions, ArchiveRecoverableItemsPurges, SyncIssues, Conflicts, LocalFailures, ServerFailures, RecipientCache, QuickContacts, ConversationHistory, ToDoSearch
-
-Required: False
-Position: 3
-Default value: 
-Accept pipeline input: False
-Accept wildcard characters: False
-```
-
-### -PublicFolder
-Force target a public folder instead.
-
-```yaml
-Type: SwitchParameter
+Type: String
 Parameter Sets: (All)
 Aliases: 
 
 Required: False
 Position: 4
-Default value: False
+Default value: MsgFolderRoot
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -123,10 +99,13 @@ Accept wildcard characters: False
 
 ## NOTES
 Author: Zachary Loeber
-Site: http://www.the-little-things.net/
 Requires: Powershell 3.0
 Version History
 1.0.0 - Initial release
 
 ## RELATED LINKS
+
+[http://www.the-little-things.net/](http://www.the-little-things.net/)
+
+[https://www.github.com/zloeber/EWSModule](https://www.github.com/zloeber/EWSModule)
 

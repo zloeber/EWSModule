@@ -1,37 +1,38 @@
 ﻿function Get-EWSContacts {
     <# 
     .SYNOPSIS 
-        Gets all contacts in a Contact folder in a Mailbox using the Exchange Web Services API 
-     
+    Gets all contacts in a Contact folder in a Mailbox using the Exchange Web Services API 
     .DESCRIPTION
-        Gets all contacts in a Contact folder in a Mailbox using the Exchange Web Services API 
-
+    Gets all contacts in a Contact folder in a Mailbox using the Exchange Web Services API 
     .PARAMETER EWSService
-        Exchange web service connection object to use. The default is using the currently connected session.
+    Exchange web service connection object to use. The default is using the currently connected session.
     .PARAMETER Mailbox
-        Mailbox to target. If none is provided, impersonation is checked and used if possible, otherwise the EWSService object mailbox is targeted.
+    Mailbox to target. If none is provided, impersonation is checked and used if possible, otherwise the EWSService object mailbox is targeted.
     .PARAMETER EmailAddress
-        Email address of the contact to search.
+    Email address of the contact to search.
     .PARAMETER Folder
-        Folder in the mailbox in which the contact is to be searched
+    Folder in the mailbox in which the contact is to be searched
     .PARAMETER SearchType
-        Search type determines different orders to search. The default is ContactsThenDirectory
+    Search type determines different orders to search. The default is ContactsThenDirectory
     .PARAMETER Partial
-        Non-exact match searching.
-      
+    Non-exact match searching.
     .EXAMPLE
-        To get all contacts from a Mailbox's default contacts folder
-        Get-EWSContacts -Mailbox mailbox@domain.com
-    .EXAMPLE
-        To get all the Contacts from subfolder of the Mailbox's default contacts folder
-        Get-EWSContacts -Mailbox mailbox@domain.com -Folder \Contact\test
+    PS> Get-EWSContacts -Mailbox mailbox@domain.com
 
+    Get all contacts from a Mailbox's default contacts folder
+    .EXAMPLE
+    PS> Get-EWSContacts -Mailbox mailbox@domain.com -Folder \Contact\test
+
+    Get all the Contacts from subfolder of the Mailbox's default contacts folder
+    .LINK
+    http://www.the-little-things.net/
+    .LINK
+    https://www.github.com/zloeber/EWSModule
     .NOTES
-        Author: Zachary Loeber
-        Site: http://www.the-little-things.net/
-        Requires: Powershell 3.0
-        Version History
-        1.0.0 - Initial release
+    Author: Zachary Loeber
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
     #>
     [CmdletBinding()] 
     param(
@@ -52,7 +53,7 @@
 
     # Pull in all the caller verbose,debug,info,warn and other preferences
     Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
-    $FunctionName = MyInvocation.MyCommand.Name
+    $FunctionName = $MyInvocation.MyCommand.Name
     
     if (-not (Get-EWSModuleInitializationState)) {
         throw "$($FunctionName): EWS Module has not been initialized. Try running Initialize-EWS to rectify."

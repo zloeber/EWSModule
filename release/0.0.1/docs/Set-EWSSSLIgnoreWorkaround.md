@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Set-EWSSSLIgnoreWorkaround
+
 ## SYNOPSIS
 Sets the module to ignore SSL checking.
 

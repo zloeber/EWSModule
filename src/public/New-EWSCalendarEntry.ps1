@@ -1,40 +1,43 @@
 ﻿function New-EWSCalendarEntry {
     <# 
     .SYNOPSIS 
-        Creates an appointment object that can be manipulated or saved.
+    Creates an appointment object that can be manipulated or saved.
     .DESCRIPTION 
-        Creates an appointment object that can be manipulated or saved.
+    Creates an appointment object that can be manipulated or saved.
     .PARAMETER EWSService
-        Exchange web service connection object to use. The default is using the currently connected session.
+    Exchange web service connection object to use. The default is using the currently connected session.
     .PARAMETER FreeBusyStatus
-        FreeBusy status for the appointment. Can be 'Free','Tentative','Busy','OOF','WorkingElsewhere', or 'NoData'. Defaults to 'Free'.
+    FreeBusy status for the appointment. Can be 'Free','Tentative','Busy','OOF','WorkingElsewhere', or 'NoData'. Defaults to 'Free'.
     .PARAMETER IsAllDayEvent
-        Set the flag to mark the appointment as an all day event.
+    Set the flag to mark the appointment as an all day event.
     .PARAMETER IsReminderSet
-        Set the flag to mark the appointment to have a default reminder.
+    Set the flag to mark the appointment to have a default reminder.
     .PARAMETER Start
-        Start time of the appointment.
+    Start time of the appointment.
     .PARAMETER End
-        End time of the appointment.
+    End time of the appointment.
     .PARAMETER Subject
-        Appointment subject line.
+    Appointment subject line.
     .PARAMETER Location
-        Appointment location.
+    Appointment location.
     .PARAMETER Body
-        Body of the appointment.
+    Body of the appointment.
     .EXAMPLE
-        $CalEntry = New-EWSCalendarEntry -IsAllDayEvent $true -Subject 'My Event' -Location 'Elsewhere'
+    $CalEntry = New-EWSCalendarEntry -IsAllDayEvent $true -Subject 'My Event' -Location 'Elsewhere'
 
-        Description
-        --------------
-        Creates a new calendar entry as an all day event called 'My Event' and stores it in $CalEntry
+    Creates a new calendar entry as an all day event called 'My Event' and stores it in $CalEntry
+
+    .LINK
+    http://www.the-little-things.net/
+
+    .LINK
+    https://www.github.com/zloeber/EWSModule
 
     .NOTES
-        Author: Zachary Loeber
-        Site: http://www.the-little-things.net/
-        Requires: Powershell 3.0
-        Version History
-        1.0.0 - Initial release
+    Author: Zachary Loeber
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
     #>
     [CmdletBinding()]
     param(

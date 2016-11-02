@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Install-EWSDll
+
 ## SYNOPSIS
 Attempts to download and extract the ews dll needed for this library.
 
@@ -55,7 +56,7 @@ Aliases:
 
 Required: False
 Position: 2
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

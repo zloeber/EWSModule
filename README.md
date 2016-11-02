@@ -5,10 +5,8 @@
 
 ```
 Import-Module ./EWSModule.psm1
-Install-EWSDLL -Verbose
-Initialize-EWS -Verbose
 Connect-EWS -Credential (Get-Credential) -Verbose
-Get-EWSFolder
+Get-EWSFolderItem -SearchBase Inbox -Count 5
 ```
 
 ##Install
@@ -17,7 +15,7 @@ You can install this module manually with the following command.
 
 `iex (New-Object Net.WebClient).DownloadString("https://github.com/zloeber/EWSModule/raw/master/Install-EWSModule.ps1")`
 
-Note that this module does not come with the prerequisite EWS dll (primarily because I simply don't know the rules around redistributing that dll). You can still load the module up then install the DLL with the Install-EWSDLL module (assuming that Initialize-EWS fails that is, if Initialize-EWS works then you likely already have the EWS dlls installed to some default location and are set to go).
+~~Note that this module does not come with the prerequisite EWS dll (primarily because I simply don't know the rules around redistributing that dll). You can still load the module up then install the DLL with the Install-EWSDLL module (assuming that Initialize-EWS fails that is, if Initialize-EWS works then you likely already have the EWS dlls installed to some default location and are set to go).~~
 
 ##Status
 The initial code behind this was for a project I was working on based around calendar appointments. This code was based on an even earlier script I wrote just to get a job done. As I got some internal requests for the code, I refined some of the functions and used this as an opportunity to become better with PowerShell modules. So, pull requests and improvement suggestions are certainly welcome.
@@ -38,6 +36,8 @@ If you don't want to install the EWS managed API then all we really need is a si
 
 You don't even have to install this module to use it honestly. You can clone the repo, load the module from the downloaded folder, download and use the most recent EWS dll, initialize, and then connect to EWS in just a few simple commands.
 
+**Update:** I've updated the code to be even more simple to use. If you use connect-ews with a valid credential a number of locations will be checked for the dll. If it isn't found it will be automatically extracted from a base64 encoded variable into the module directory for use instead. So all you need to do is use connect-ews to; install the appropriate dll, run the import of the dll into memory, initialize all the type accelerators, and connect to EWS.
+
 ###Custom Type Accelerators
 Anyone who has worked at all with Exchange Web Services is aware of the large number of .NET type references which are required to get anything done. This tends to make any code horribly complex and scary looking. Go ahead and [take a look at some right now](https://raw.githubusercontent.com/gscales/Powershell-Scripts/master/EWSContacts/EWSContactFunctions.ps1) if you want to be overwhelmed.
 
@@ -53,7 +53,7 @@ I went a bit nuts with these and just decided to roll with it in this module acr
 
 Interestingly enough I'm able to load up and export functions that have these custom type accelerators in strongly typed parameters before they are ever defined. It seems there is something worth researching here on the inner workings of PowerShell when I get some free time.
 
-Anyway, if you are going through the code you can find the .NET type to accelerator name lookup in a hash called `$EWSAccels` within the base EWSModule.psm1 file. I've also actually written a function for expanding these kinds of accelerators in script code as well (I'm still tidying that code up but it should be released soon).
+Anyway, if you are going through the code you can find the .NET type to accelerator name lookup in a hash called `$EWSAccels` within the base EWSModule.psm1 file. 
 
 ###Caller Preferences
 I've personally run into issues when working with larger PowerShell projects where I'm using a custom advanced function within another advanced function and it fails to adhere to the -Verbose flag I'm sending to the parent function. In the past I came up with all kinds of silly work arounds for this. Now I'm using another author's clever function, Get-CallerPreference, in every function I create. This should mean that if you are using this module to build larger projects you can confidently know that your preferences will be followed down the stack (unless explicitly set obviously).
@@ -65,10 +65,17 @@ This module is designed to reuse a single EWS connection across all functions. T
 I've removed all `Impersonate` flags from any imported cmdlets as you can infer impersonation is occuring by the connection state of EWS. If you want to impersonate a user you will need to use the `Set-EWSMailboxImpersonation` cmdlet. The rest of the cmdlets will then use `Get-EWSTargettedMailbox` to figure out which mailbox an operation should target.
 
 Mailbox targeting is done in this order:
-1. If a mailbox name (email address) is passed to the function we will lookup and try to target it directly without impersonation.
-2. If no mailbox name (email address) is passed to the function then we will look for the ImpersonationUserID of the EWS connection. If it is set we will attempt to target that mailbox via impersonation.
-3. If ImpersonationUserID is not set then we will try and target the EWS credential UserID directly.
+1. If a mailbox name is passed to the function and it is a valid email address we will lookup and try to target it directly without impersonation.
+2. If a mailbox name is passed to the function and it is NOT a valid email address we will try to lookup the email address for the assumed account ID in Active Directory and try to target it directly without impersonation.
+2. If no mailbox name is passed to the function then we will look for the ImpersonationUserID of the EWS connection. If it is set we will attempt to target that mailbox via impersonation.
+3. If ImpersonationUserID is not set then we will try and target the EWS credential UserID directly. If it is not in email address format we attempt to resolve it to the correct format using EWS directory lookup mechanisms (not a direct AD query).
 
+### Building
+If you want to build this module on your own I've included the entire build script needed to automate the process. One note is that the script analyzer will run and find that we are passing direct username/password parameters in 'Connect-EWS' (it also takes the appropriate credential object for what it is worth). This will normally error out the build process but I've put in a yes/no prompt to continue anyway. To build the script simply download this repo and run:
+
+```
+.\build.ps1
+```
 
 ##Credits
 Glen Scale - [Blog](http://gsexdev.blogspot.com/), [Github](https://github.com/gscales)

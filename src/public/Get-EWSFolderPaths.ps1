@@ -1,31 +1,32 @@
 ﻿function Get-EWSFolderPaths {
     <#
     .SYNOPSIS
-        Return a mailbox folder object.
+    Return a mailbox folder object.
     .DESCRIPTION
-        Return a mailbox folder object.
+    Return a mailbox folder object.
     .PARAMETER EWSService
-        Exchange web service connection object to use. The default is using the currently connected session.
+    Exchange web service connection object to use. The default is using the currently connected session.
     .PARAMETER RootFolderId
-        Folder to target. Can target specific mailboxes with Get-EWSFolder
+    Folder to target. Can target specific mailboxes with Get-EWSFolder
     .PARAMETER FolderCache
-        Mailbox foldercache object
+    Mailbox foldercache object
     .PARAMETER FolderPrefix
-        I forget what this one does, you almost never have to pass it though.
+    I forget what this one does, you almost never have to pass it though.
 
     .EXAMPLE
-        Get-EWSFolderPaths
+    Get-EWSFolderPaths
 
-        Description
-        -----------
-        Gets the paths of the currently connected mailbox.
+    Gets the paths of the currently connected mailbox.
 
+    .LINK
+    http://www.the-little-things.net/
+    .LINK
+    https://www.github.com/zloeber/EWSModule
     .NOTES
-       Author: Zachary Loeber
-       Site: http://www.the-little-things.net/
-       Requires: Powershell 3.0
-       Version History
-       1.0.0 - Initial release
+    Author: Zachary Loeber
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
     #>
     [CmdletBinding()]
     param (
@@ -33,7 +34,7 @@
         [ews_service]$EWSService,
         [Parameter(Position=1, Mandatory=$true)] 
         [ews_folderid]$RootFolderId,
-        [Parameter(Position=2, Mandatory=$true)]
+        [Parameter(Position=2)]
         [PSObject]$FolderCache,
         [Parameter(Position=3)]
         [String]$FolderPrefix
@@ -57,21 +58,23 @@
     }
     
     #Define Extended properties  
-    $PR_FOLDER_TYPE = new-object Microsoft.Exchange.WebServices.Data.ExtendedPropertyDefinition(13825,[Microsoft.Exchange.WebServices.Data.MapiPropertyType]::Integer)  
-    $PR_MESSAGE_SIZE_EXTENDED = new-object Microsoft.Exchange.WebServices.Data.ExtendedPropertyDefinition(3592, [Microsoft.Exchange.WebServices.Data.MapiPropertyType]::Long)
+    $PR_FOLDER_TYPE = new-object Microsoft.Exchange.WebServices.Data.ExtendedPropertyDefinition(13825,[ews_mapiproptype]::Integer)  
+    $PR_MESSAGE_SIZE_EXTENDED = new-object Microsoft.Exchange.WebServices.Data.ExtendedPropertyDefinition(3592, [ews_mapiproptype]::Long)
+    $PR_ISHIDDEN = new-object Microsoft.Exchange.WebServices.Data.ExtendedPropertyDefinition(4340, [ews_mapiproptype]::Bollean)
     
     #Define the FolderView used for Export should not be any larger then 1000 folders due to throttling  
     $fvFolderView =  New-Object Microsoft.Exchange.WebServices.Data.FolderView(1000)  
     
     #Deep transversal will ensure all folders in the search path are returned  
     $fvFolderView.Traversal = [Microsoft.Exchange.WebServices.Data.FolderTraversal]::Deep
-    $psPropertySet = new-object Microsoft.Exchange.WebServices.Data.PropertySet([Microsoft.Exchange.WebServices.Data.BasePropertySet]::FirstClassProperties)
-    $PR_Folder_Path = new-object Microsoft.Exchange.WebServices.Data.ExtendedPropertyDefinition(26293, [Microsoft.Exchange.WebServices.Data.MapiPropertyType]::String)
+    $psPropertySet = new-object Microsoft.Exchange.WebServices.Data.PropertySet([ews_basepropset]::FirstClassProperties)
+    $PR_Folder_Path = new-object Microsoft.Exchange.WebServices.Data.ExtendedPropertyDefinition(26293, [ews_mapiproptype]::String)
     
     #Add Properties to the  Property Set  
     $psPropertySet.Add($PR_Folder_Path)
     $psPropertySet.Add($PR_MESSAGE_SIZE_EXTENDED)
-    $fvFolderView.PropertySet = $psPropertySet 
+    $psPropertySet.Add($PR_ISHIDDEN)
+    $fvFolderView.PropertySet = $psPropertySet
     
     #The Search filter will exclude any Search Folders  
     $sfSearchFilter = new-object Microsoft.Exchange.WebServices.Data.SearchFilter+IsEqualTo($PR_FOLDER_TYPE,"1")
@@ -88,7 +91,8 @@
                 $hexArr = $binarry | ForEach-Object { $_.ToString("X2") }  
                 $hexString = $hexArr -join ''  
                 $hexString = $hexString.Replace("FEFF", "5C00")  
-                $fpath = ConvertTo-String($hexString)  
+                $fpath = ConvertTo-String($hexString)
+                $fpath
             }
             if($FolderCache.ContainsKey($ffFolder.Id.UniqueId) -eq $false) {
                 if ([string]::IsNullOrEmpty($FolderPrefix)) {

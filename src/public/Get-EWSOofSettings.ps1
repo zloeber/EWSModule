@@ -27,7 +27,7 @@ function Get-EWSOOFSettings {
     param(
         [parameter(Position=0, HelpMessage='Connected EWS object.')]
         [ews_service]$EWSService,
-        [parameter(Position=1, Mandatory=$True, ValueFromPipelineByPropertyName=$true, HelpMessage='Mailbox to impersonate.')]
+        [parameter(Position=1, ValueFromPipelineByPropertyName=$true, HelpMessage='Mailbox to impersonate.')]
         [String]$Mailbox
     )
 

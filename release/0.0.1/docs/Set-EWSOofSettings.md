@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Set-EWSOofSettings
+
 ## SYNOPSIS
 Set the out of office settings for a mailbox.
 
@@ -61,7 +62,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -76,7 +77,7 @@ Aliases:
 
 Required: True
 Position: 2
-Default value: 
+Default value: None
 Accept pipeline input: True (ByPropertyName)
 Accept wildcard characters: False
 ```
@@ -125,7 +126,7 @@ Aliases:
 
 Required: False
 Position: 5
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -140,7 +141,7 @@ Aliases:
 
 Required: False
 Position: 6
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -155,7 +156,7 @@ Aliases:
 
 Required: False
 Position: 7
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -170,7 +171,7 @@ Aliases:
 
 Required: False
 Position: 8
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

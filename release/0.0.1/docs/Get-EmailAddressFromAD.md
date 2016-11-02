@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Get-EmailAddressFromAD
+
 ## SYNOPSIS
 Return the email address of a User ID from AD.
 
@@ -24,8 +25,6 @@ Return the email address of a User ID from AD.
 Get-EmailAddressFromAD -UserID jdoe
 ```
 
-Description
------------
 Reterns the email address for jdoe from the domain.
 
 ## PARAMETERS
@@ -51,10 +50,13 @@ Accept wildcard characters: False
 
 ## NOTES
 Author: Zachary Loeber
-Site: http://www.the-little-things.net/
 Requires: Powershell 3.0
 Version History
 1.0.0 - Initial release
 
 ## RELATED LINKS
+
+[http://www.the-little-things.net/](http://www.the-little-things.net/)
+
+[https://www.github.com/zloeber/EWSModule](https://www.github.com/zloeber/EWSModule)
 

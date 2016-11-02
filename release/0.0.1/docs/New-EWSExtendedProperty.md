@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # New-EWSExtendedProperty
+
 ## SYNOPSIS
 Creates a new extended property which can be assigned to items in outlook.
 
@@ -59,7 +60,7 @@ Aliases:
 
 Required: True
 Position: 2
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```

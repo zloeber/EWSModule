@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Get-EWSDllLoadState
+
 ## SYNOPSIS
 Determine if the EWS dll is loaded or not.
 
@@ -24,8 +25,6 @@ Determine if the EWS dll is loaded or not.
 Get-EWSDllLoadState
 ```
 
-Description
---------------
 Determine if the EWS dll is loaded or not.
 
 ## PARAMETERS
@@ -36,10 +35,13 @@ Determine if the EWS dll is loaded or not.
 
 ## NOTES
 Author: Zachary Loeber
-Site: http://www.the-little-things.net/
 Requires: Powershell 3.0
 Version History
 1.0.0 - Initial release
 
 ## RELATED LINKS
+
+[http://www.the-little-things.net/](http://www.the-little-things.net/)
+
+[https://www.github.com/zloeber/EWSModule](https://www.github.com/zloeber/EWSModule)
 

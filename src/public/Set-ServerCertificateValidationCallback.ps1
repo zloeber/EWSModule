@@ -9,14 +9,19 @@ function Set-ServerCertificateValidationCallback {
     Defaults to [System.Net.ServicePointManager]::ServerCertificateValidationCallback
      
     .EXAMPLE
-    Set-ServerCertificateValidationCallback          
+    Set-ServerCertificateValidationCallback
+
+    .LINK
+    http://www.the-little-things.net/
+
+    .LINK
+    https://www.github.com/zloeber/EWSModule
 
     .NOTES
-       Author: Zachary Loeber
-       Site: http://www.the-little-things.net/
-       Requires: Powershell 3.0
-       Version History
-       1.0.0 - Initial release
+    Author: Zachary Loeber
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
     #>
 
     param(

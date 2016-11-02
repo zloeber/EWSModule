@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # New-EWSCalendarEntry
+
 ## SYNOPSIS
 Creates an appointment object that can be manipulated or saved.
 
@@ -26,8 +27,6 @@ Creates an appointment object that can be manipulated or saved.
 $CalEntry = New-EWSCalendarEntry -IsAllDayEvent $true -Subject 'My Event' -Location 'Elsewhere'
 ```
 
-Description
---------------
 Creates a new calendar entry as an all day event called 'My Event' and stores it in $CalEntry
 
 ## PARAMETERS
@@ -43,7 +42,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -136,7 +135,7 @@ Aliases:
 
 Required: False
 Position: 7
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -151,7 +150,7 @@ Aliases:
 
 Required: False
 Position: 8
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -166,7 +165,7 @@ Aliases:
 
 Required: False
 Position: 9
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -177,10 +176,13 @@ Accept wildcard characters: False
 
 ## NOTES
 Author: Zachary Loeber
-Site: http://www.the-little-things.net/
 Requires: Powershell 3.0
 Version History
 1.0.0 - Initial release
 
 ## RELATED LINKS
+
+[http://www.the-little-things.net/](http://www.the-little-things.net/)
+
+[https://www.github.com/zloeber/EWSModule](https://www.github.com/zloeber/EWSModule)
 

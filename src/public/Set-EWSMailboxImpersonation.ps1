@@ -1,29 +1,33 @@
 function Set-EWSMailboxImpersonation {
     <# 
     .SYNOPSIS 
-        Set the impersonation for a mailbox.
+    Set the impersonation for a mailbox.
     .DESCRIPTION 
-        Set the impersonation for a mailbox.
+    Set the impersonation for a mailbox.
     .PARAMETER EWSService
-        Exchange web service connection object to use. The default is using the currently connected session.
+    Exchange web service connection object to use. The default is using the currently connected session.
     .PARAMETER Mailbox
-        Mailbox to target.
+    Mailbox to target.
     .PARAMETER SkipValidation
-        Do not validate if you have impersonation rights for the mailbox (can speed things up quite a bit)
+    Do not validate if you have impersonation rights for the mailbox (can speed things up quite a bit)
 
     .EXAMPLE
-        Set-EWSMailboxImpersonation -Mailbox mailbox@domain.com
+    Set-EWSMailboxImpersonation -Mailbox mailbox@domain.com
 
-        Description
-        --------------
-        Set impersonation mode for the current connected EWS user for mailbox@domain.com
+    Set impersonation mode for the current connected EWS user for mailbox@domain.com
+
+    .LINK
+    http://www.the-little-things.net/
+
+    .LINK
+    https://www.github.com/zloeber/EWSModule
 
     .NOTES
-        Author: Zachary Loeber
-        Site: http://www.the-little-things.net/
-        Requires: Powershell 3.0
-        Version History
-        1.0.0 - Initial release
+    Author: Zachary Loeber
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
+
     #>
     [CmdletBinding()]
     param(

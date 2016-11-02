@@ -37,9 +37,11 @@ function Import-EWSDll {
     $ewspaths = @()
     if (-not (Get-EWSDllLoadState)) {
         if (-not [string]::IsNullOrEmpty($EWSManagedApiPath)) {
-            $ewspaths += @($EWSManagedApiPath)
+            $ewspaths = @($EWSManagedApiPath,$Script:ewsdllpaths)
         }
-        $ewspaths += $script:ewsdllpaths
+        else {
+            $ewspaths = $script:ewsdllpaths
+        }
 
         $EWSLoaded = $false
         foreach ($ewspath in $ewspaths) {
@@ -49,10 +51,18 @@ function Import-EWSDll {
                         Write-Verbose "$($FunctionName): Attempting to load $ewspath"
                         Import-Module -Name $ewspath -ErrorAction:Stop -Global
                         $EWSLoaded = $true
+                        break
                     }
                 }
             }
             catch {}
+        }
+        if (-not $EWSLoaded) {
+            # If we made it this far then we try to create the dll from an encoded variable so we can proceed.
+            Write-Verbose "$($FunctionName): Wasn't able to load the module from any paths, extracting from memory"
+            Extract-EWSDLL
+            Import-Module -Name $MyModulePath\Microsoft.Exchange.WebServices.dll -ErrorAction:Stop -Global
+            $EWSLoaded = $true
         }
     }
     else {

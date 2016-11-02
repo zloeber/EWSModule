@@ -1,24 +1,27 @@
 function Get-EmailAddressFromAD {
     <#
-        .SYNOPSIS
-            Return the email address of a User ID from AD.
-        .DESCRIPTION
-            Return the email address of a User ID from AD.
-        .PARAMETER UserID
-            User ID to search for in AD.
-        .EXAMPLE
-            Get-EmailAddressFromAD -UserID jdoe
+    .SYNOPSIS
+    Return the email address of a User ID from AD.
+    .DESCRIPTION
+    Return the email address of a User ID from AD.
+    .PARAMETER UserID
+    User ID to search for in AD.
+    .EXAMPLE
+    PS> Get-EmailAddressFromAD -UserID jdoe
 
-            Description
-            -----------
-            Reterns the email address for jdoe from the domain.
+    Reterns the email address for jdoe from the domain.
 
-        .NOTES
-            Author: Zachary Loeber
-            Site: http://www.the-little-things.net/
-            Requires: Powershell 3.0
-            Version History
-            1.0.0 - Initial release
+    .LINK
+    http://www.the-little-things.net/
+
+    .LINK
+    https://www.github.com/zloeber/EWSModule
+
+    .NOTES
+    Author: Zachary Loeber
+    Requires: Powershell 3.0
+    Version History
+    1.0.0 - Initial release
     #>
     [CmdletBinding()]
     param(

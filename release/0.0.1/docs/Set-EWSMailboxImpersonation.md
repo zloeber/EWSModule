@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Set-EWSMailboxImpersonation
+
 ## SYNOPSIS
 Set the impersonation for a mailbox.
 
@@ -24,8 +25,6 @@ Set the impersonation for a mailbox.
 Set-EWSMailboxImpersonation -Mailbox mailbox@domain.com
 ```
 
-Description
---------------
 Set impersonation mode for the current connected EWS user for mailbox@domain.com
 
 ## PARAMETERS
@@ -41,7 +40,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -56,7 +55,7 @@ Aliases:
 
 Required: True
 Position: 2
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -82,10 +81,13 @@ Accept wildcard characters: False
 
 ## NOTES
 Author: Zachary Loeber
-Site: http://www.the-little-things.net/
 Requires: Powershell 3.0
 Version History
 1.0.0 - Initial release
 
 ## RELATED LINKS
+
+[http://www.the-little-things.net/](http://www.the-little-things.net/)
+
+[https://www.github.com/zloeber/EWSModule](https://www.github.com/zloeber/EWSModule)
 

@@ -39,8 +39,36 @@
     Get-CallerPreference -Cmdlet $PSCmdlet -SessionState $ExecutionContext.SessionState
     $FunctionName = $MyInvocation.MyCommand
     
-    if (-not $Uninitialize) {
-        Import-EWSDll -EWSManagedApiPath $EWSManagedApiPath
+    if ($Uninitialize) {
+        # Uninitialize EWS
+        if (Get-EWSModuleInitializationState) {
+            $accelerators = [PSObject].Assembly.GetType('System.Management.Automation.TypeAccelerators')::get
+            $accelkeyscopy = @{}
+            $accelerators.Keys | Where {$_ -like "ews_*"} | Foreach { $accelkeyscopy.$_ = $EWSAccels[$_] }
+            foreach ( $key in $accelkeyscopy.Keys ) {
+                Write-Verbose "UnInitialize-EWS: Removing type accelerator - $($key)"
+                $accelerators.Remove($key) | Out-Null
+            }
+            Write-Verbose ("$($FunctionName): Custom type accelerators removed!")
+            Set-EWSModuleInitializationState $false
+        }
+        if (Get-Module 'Microsoft.Exchange.WebServices') {
+            Remove-Module Microsoft.Exchange.WebServices
+            Write-Verbose ("$($FunctionName): EWS dll Unloaded!")
+        }
+        return $true
+    }
+    elseif (Get-EWSModuleInitializationState) {
+        return $true
+    }
+    else {
+        if ([string]::IsNullOrEmpty($EWSManagedApiPath)) {
+            $EWSManagedApiPath = "$($Script:MyModulePath)\Microsoft.Exchange.WebServices.dll"
+        }
+        if (-not (Get-EWSDllLoadState)) {
+            Write-Verbose "$($FunctionName): Attempting to load the DLL first..."
+            Import-EWSDll -EWSManagedApiPath $EWSManagedApiPath
+        }
         if (Get-EWSDllLoadState) {
             if (-not (Get-EWSModuleInitializationState)) {
                 # Setup a bunch of type accelerators to make this mess easier to understand (slightly)
@@ -69,25 +97,5 @@
         else {
             throw "$($FunctionName): Cant load EWS module. Please verify it is installed or manually provide the path to Microsoft.Exchange.WebServices.dll"
         }
-    }
-    else {
-        # Uninitialize EWS
-        if (Get-EWSModuleInitializationState) {
-            $accelerators = [PSObject].Assembly.GetType('System.Management.Automation.TypeAccelerators')::get
-            $accelkeyscopy = @{}
-            $accelerators.Keys | Where {$_ -like "ews_*"} | Foreach { $accelkeyscopy.$_ = $EWSAccels[$_] }
-            foreach ( $key in $accelkeyscopy.Keys ) {
-                Write-Verbose "UnInitialize-EWS: Removing type accelerator - $($key)"
-                $accelerators.Remove($key) | Out-Null
-            }
-            Write-Verbose ("$($FunctionName): Custom type accelerators removed!")
-            Set-EWSModuleInitializationState $false
-        }
-        if (Get-EWSDllLoadState) {
-            Remove-Module Microsoft.Exchange.WebServices
-            Write-Verbose ("$($FunctionName): EWS dll Unloaded!")
-        }
-
-        return $true
-    }
+    } 
 }

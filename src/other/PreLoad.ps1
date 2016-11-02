@@ -1,4 +1,25 @@
 #region Private Variables
+# Use this variable for any path-sepecific actions (like loading dlls and such) to ensure it will work in testing and after being built
+$MyModulePath = $(
+    Function Get-ScriptPath {
+        $Invocation = (Get-Variable MyInvocation -Scope 1).Value
+        if($Invocation.PSScriptRoot) {
+            $Invocation.PSScriptRoot
+        }
+        Elseif($Invocation.MyCommand.Path) {
+            Split-Path $Invocation.MyCommand.Path
+        }
+        elseif ($Invocation.InvocationName.Length -eq 0) {
+            (Get-Location).Path
+        }
+        else {
+            $Invocation.InvocationName.Substring(0,$Invocation.InvocationName.LastIndexOf("\"));
+        }
+    }
+
+    Get-ScriptPath
+)
+
 # Track if we have gone through the Initialize-EWS function yet.
 [bool]$EWSModuleInitialized = $false
 
@@ -53,6 +74,7 @@ $EWSAccels = @{
 }
 
 $ewsdllpaths = @( 
+    "$($MyModulePath)\Microsoft.Exchange.WebServices.dll",
     "$($ScriptPath)\Microsoft.Exchange.WebServices.dll",
     'C:\Program Files (x86)\Microsoft\Exchange\Web Services\2.1\Microsoft.Exchange.WebServices.dll',
     'C:\Program Files\Microsoft\Exchange\Web Services\2.1\Microsoft.Exchange.WebServices.dll')

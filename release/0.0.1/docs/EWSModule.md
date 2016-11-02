@@ -35,6 +35,9 @@ Determine if the EWS dll is loaded or not.
 ### [Get-EWSFolder](Get-EWSFolder.md)
 Return a mailbox folder object.
 
+### [Get-EWSFolderItem](Get-EWSFolderItem.md)
+Returns items from a mailbox folder.
+
 ### [Get-EWSFolderPaths](Get-EWSFolderPaths.md)
 Return a mailbox folder object.
 
@@ -44,11 +47,14 @@ Returns the initialization state of the module.
 ### [Get-EWSOOFSettings](Get-EWSOOFSettings.md)
 Get the out of office settings for a mailbox.
 
+### [Get-EWSRootFolderID](Get-EWSRootFolderID.md)
+Return a mailbox folder object.
+
 ### [Get-EWSService](Get-EWSService.md)
 Returns the current EWSService module variable object
 
-### [Get-EWSTargettedMailbox](Get-EWSTargettedMailbox.md)
-Return the intended targeted mailbox for ews operations.
+### [Get-EWSTargetedMailbox](Get-EWSTargetedMailbox.md)
+Return the intended targeted email address of a mailbox for ews operations.
 
 ### [Get-ServerCertificateValidationCallback](Get-ServerCertificateValidationCallback.md)
 Returns the current certificate validation callback setting

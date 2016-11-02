@@ -1,17 +1,18 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Get-EWSFolderPaths
+
 ## SYNOPSIS
 Return a mailbox folder object.
 
 ## SYNTAX
 
 ```
-Get-EWSFolderPaths [[-EWSService] <ExchangeService>] [-RootFolderId] <FolderId> [-FolderCache] <PSObject>
+Get-EWSFolderPaths [[-EWSService] <ExchangeService>] [-RootFolderId] <FolderId> [[-FolderCache] <PSObject>]
  [[-FolderPrefix] <String>]
 ```
 
@@ -25,8 +26,6 @@ Return a mailbox folder object.
 Get-EWSFolderPaths
 ```
 
-Description
------------
 Gets the paths of the currently connected mailbox.
 
 ## PARAMETERS
@@ -42,7 +41,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -58,7 +57,7 @@ Aliases:
 
 Required: True
 Position: 2
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -71,9 +70,9 @@ Type: PSObject
 Parameter Sets: (All)
 Aliases: 
 
-Required: True
+Required: False
 Position: 3
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -88,7 +87,7 @@ Aliases:
 
 Required: False
 Position: 4
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -99,10 +98,13 @@ Accept wildcard characters: False
 
 ## NOTES
 Author: Zachary Loeber
-Site: http://www.the-little-things.net/
 Requires: Powershell 3.0
 Version History
 1.0.0 - Initial release
 
 ## RELATED LINKS
+
+[http://www.the-little-things.net/](http://www.the-little-things.net/)
+
+[https://www.github.com/zloeber/EWSModule](https://www.github.com/zloeber/EWSModule)
 

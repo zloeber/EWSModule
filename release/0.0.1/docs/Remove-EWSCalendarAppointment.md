@@ -1,10 +1,11 @@
 ---
 external help file: EWSModule-help.xml
-online version: 
+online version: http://www.the-little-things.net/
 schema: 2.0.0
 ---
 
 # Remove-EWSCalendarAppointment
+
 ## SYNOPSIS
 Remove a calendar appointment object from a mailbox.
 
@@ -22,12 +23,10 @@ Remove a calendar appointment object from a mailbox.
 
 ### -------------------------- EXAMPLE 1 --------------------------
 ```
-
+Remove-EWSCalendarAppointment -Appointment $Appt -DeleteMode 'SoftDelete' -CancellationMode 'SendToAllAndSaveCopy'
 ```
 
-Description
------------
-TBD
+Removes the calendar appointment stored in $Appt using softdelete and sending a cancellation notice and saving a copy of the sent cancellation.
 
 ## PARAMETERS
 
@@ -42,7 +41,7 @@ Aliases:
 
 Required: False
 Position: 1
-Default value: 
+Default value: None
 Accept pipeline input: False
 Accept wildcard characters: False
 ```
@@ -57,7 +56,7 @@ Aliases:
 
 Required: True
 Position: 2
-Default value: 
+Default value: None
 Accept pipeline input: True (ByValue)
 Accept wildcard characters: False
 ```
@@ -100,10 +99,13 @@ Accept wildcard characters: False
 
 ## NOTES
 Author: Zachary Loeber
-Site: http://www.the-little-things.net/
 Requires: Powershell 3.0
 Version History
 1.0.0 - Initial release
 
 ## RELATED LINKS
+
+[http://www.the-little-things.net/](http://www.the-little-things.net/)
+
+[https://www.github.com/zloeber/EWSModule](https://www.github.com/zloeber/EWSModule)
 
