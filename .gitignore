@@ -11,6 +11,7 @@ psgalleryapi.txt
 ~$*
 *~
 *.pfx
+*.log
 
 #############
 ## Windows detritus
